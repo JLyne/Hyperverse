@@ -51,16 +51,6 @@ public interface HyperConfiguration {
     boolean shouldKeepSpawnLoaded();
 
     /**
-     * Whether or not Hyperverse should load
-     * and store player profiles for specific
-     * world groups
-     *
-     * @return True if the player profile group
-     *         system should be enabled
-     */
-    boolean shouldGroupProfiles();
-
-    /**
      * Get the language code that will be used
      * to resolve translations
      *

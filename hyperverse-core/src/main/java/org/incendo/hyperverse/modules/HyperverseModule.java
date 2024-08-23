@@ -19,7 +19,6 @@ package org.incendo.hyperverse.modules;
 
 import cloud.commandframework.services.ServicePipeline;
 import com.google.inject.AbstractModule;
-import com.google.inject.Provides;
 import com.google.inject.Singleton;
 import com.google.inject.assistedinject.FactoryModuleBuilder;
 import com.google.inject.internal.ProviderMethodsModule;
@@ -42,7 +41,6 @@ import org.incendo.hyperverse.platform.PlatformProvisionException;
 import org.incendo.hyperverse.platform.unsupported.NMSImpl;
 import org.incendo.hyperverse.teleportation.SimpleTeleportationManager;
 import org.incendo.hyperverse.teleportation.TeleportationManager;
-import org.incendo.hyperverse.util.HyperConfigShouldGroupProfiles;
 import org.incendo.hyperverse.util.NMS;
 import org.incendo.hyperverse.world.HyperWorld;
 import org.incendo.hyperverse.world.HyperWorldCreator;
@@ -119,11 +117,4 @@ public final class HyperverseModule extends AbstractModule {
 
         requestStaticInjection(WorldConfiguration.class);
     }
-
-    @Provides
-    @HyperConfigShouldGroupProfiles
-    boolean shouldGroupProfiles(final @NonNull HyperConfiguration configuration) {
-        return configuration.shouldGroupProfiles();
-    }
-
 }

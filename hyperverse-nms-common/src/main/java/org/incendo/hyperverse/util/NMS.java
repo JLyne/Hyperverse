@@ -58,26 +58,4 @@ public interface NMS {
      * @return The bed respawn location, if found
      */
     @Nullable Location findBedRespawn(@NonNull Location spawnLocation);
-
-    /**
-     * Save {@link Player player} data to a {@link Path file}
-     *
-     * @param player Player that owns the data.
-     * @param file   File to save the data to.
-     */
-    void writePlayerData(@NonNull Player player, @NonNull Path file);
-
-    /**
-     * Read the {@link Player player} data from a {@link Path file} into the given {@link Player} object
-     *
-     * @param player   Player to read data into.
-     * @param file     File to read data from.
-     * @param whenDone Runnable that runs when the reading is complete.
-     */
-    void readPlayerData(
-            @NonNull Player player,
-            @NonNull Path file,
-            @NonNull Runnable whenDone
-    );
-
 }

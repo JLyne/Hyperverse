@@ -106,11 +106,6 @@ public final class FileHyperConfiguration implements HyperConfiguration {
     }
 
     @Override
-    public boolean shouldGroupProfiles() {
-        return this.fileConfigurationObject.useGroupedProfiles();
-    }
-
-    @Override
     public @NonNull String getLanguageCode() {
         return this.fileConfigurationObject.getLanguageCode();
     }

@@ -39,9 +39,6 @@ public final class FileConfigurationObject {
     @Setting(value = "keep-loaded")
     @Comment(value = "Whether or not world spawn chunks should be kept in memory")
     private boolean keepSpawnLoaded = true;
-    @Setting(value = "grouped-inventories")
-    @Comment(value = "Whether or player profile groups are enabled")
-    private boolean groupedProfiles = false;
     @Setting(value = "language-code")
     @Comment(value = "Language code used to resolve translations. Currently supported: en, sv, de, cn")
     private String languageCode = "en";
@@ -65,10 +62,6 @@ public final class FileConfigurationObject {
 
     boolean isKeepSpawnLoaded() {
         return this.keepSpawnLoaded;
-    }
-
-    boolean useGroupedProfiles() {
-        return this.groupedProfiles;
     }
 
     @NonNull String getLanguageCode() {

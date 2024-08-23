@@ -20,12 +20,8 @@ package org.incendo.hyperverse.listeners;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import io.papermc.lib.PaperLib;
-import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.attribute.Attribute;
-import org.bukkit.attribute.AttributeInstance;
-import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.boss.DragonBattle;
 import org.bukkit.entity.Ambient;
 import org.bukkit.entity.Animals;
@@ -60,9 +56,7 @@ import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.world.ChunkLoadEvent;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
-import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitScheduler;
-import org.bukkit.util.Vector;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.incendo.hyperverse.configuration.HyperConfiguration;
 import org.incendo.hyperverse.configuration.Messages;
@@ -77,7 +71,6 @@ import org.incendo.hyperverse.flags.implementation.GamemodeFlag;
 import org.incendo.hyperverse.flags.implementation.LocalRespawnFlag;
 import org.incendo.hyperverse.flags.implementation.MobSpawnFlag;
 import org.incendo.hyperverse.flags.implementation.NetherFlag;
-import org.incendo.hyperverse.flags.implementation.ProfileGroupFlag;
 import org.incendo.hyperverse.flags.implementation.PveFlag;
 import org.incendo.hyperverse.flags.implementation.PvpFlag;
 import org.incendo.hyperverse.flags.implementation.RespawnWorldFlag;
@@ -89,9 +82,6 @@ import org.incendo.hyperverse.world.WorldManager;
 import org.incendo.hyperverse.world.WorldType;
 
 import javax.inject.Inject;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
@@ -186,24 +176,6 @@ public final class EventListener implements Listener {
             this.hyperDatabase.storeLocation(PersistentLocation.fromLocation(uuid, to,
                     LocationType.PLAYER_LOCATION
             ), true, false);
-
-            if (this.hyperConfiguration.shouldGroupProfiles()) {
-                final HyperWorld hyperWorld = this.worldManager.getWorld(from.getWorld());
-                if (hyperWorld != null) {
-                    final Path oldWorldDirectory =
-                            this.plugin.getDataFolder().toPath().resolve("profiles")
-                                    .resolve(hyperWorld.getFlag(ProfileGroupFlag.class));
-                    if (!Files.exists(oldWorldDirectory)) {
-                        try {
-                            Files.createDirectories(oldWorldDirectory);
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                    this.nms.writePlayerData(event.getPlayer(), oldWorldDirectory.resolve(
-                            String.format("%s.nbt", event.getPlayer().getUniqueId().toString())));
-                }
-            }
         }
     }
 
@@ -229,70 +201,8 @@ public final class EventListener implements Listener {
         if (hyperWorld == null) {
             return;
         }
-        if (this.hyperConfiguration.shouldGroupProfiles()) {
-            final HyperWorld from = this.worldManager.getWorld(event.getFrom());
-            // Only load player data if the worlds belong to different groups
-            if (from == null || !from.getFlag(ProfileGroupFlag.class)
-                    .equals(hyperWorld.getFlag(ProfileGroupFlag.class))) {
-                final Path newWorldDirectory =
-                        this.plugin.getDataFolder().toPath().resolve("profiles")
-                                .resolve(hyperWorld.getFlag(ProfileGroupFlag.class));
-                if (!Files.exists(newWorldDirectory)) {
-                    try {
-                        Files.createDirectories(newWorldDirectory);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-                final Path playerData = newWorldDirectory
-                        .resolve(String.format("%s.nbt", player.getUniqueId().toString()));
-                if (Files.exists(playerData)) {
-                    final GameMode originalGameMode = player.getGameMode();
-                    this.nms.readPlayerData(event.getPlayer(), playerData,
-                            () -> this.scheduler.runTaskLater(this.plugin, () -> {
-                                // We need to trick Bukkit into updating the gamemode
-                                final GameMode worldGameMode = hyperWorld.getFlag(GamemodeFlag.class);
-                                if (worldGameMode != GameMode.ADVENTURE) {
-                                    player.setGameMode(GameMode.ADVENTURE);
-                                } else {
-                                    player.setGameMode(GameMode.SURVIVAL);
-                                }
-                                player.setGameMode(GameMode.SPECTATOR);
-                                if (!this.setDefaultGameMode(player, hyperWorld)) {
-                                    player.setGameMode(originalGameMode);
-                                }
-                                // Apply any other flags here
-                            }, 1L)
-                    );
-                } else {
-                    // The player has no stored data. Reset everything
-                    player.setBedSpawnLocation(player.getWorld().getSpawnLocation(), true);
-                    player.getInventory().clear();
-                    player.getEnderChest().clear();
-                    player.setTotalExperience(0);
-                    for (final PotionEffectType potionEffectType : PotionEffectType.values()) {
-                        player.removePotionEffect(potionEffectType);
-                    }
-                    player.setVelocity(new Vector(0, 0, 0));
-                    player.setTicksLived(1);
-                    player.setFireTicks(1);
-                    player.getInventory().setHeldItemSlot(0);
-                    for (final Attribute attribute : Attribute.values()) {
-                        final AttributeInstance attributeInstance = player.getAttribute(attribute);
-                        if (attributeInstance != null) {
-                            attributeInstance.setBaseValue(attributeInstance.getDefaultValue());
-                            for (final AttributeModifier attributeModifier : attributeInstance
-                                    .getModifiers()) {
-                                attributeInstance.removeModifier(attributeModifier);
-                            }
-                        }
-                    }
-                    this.setDefaultGameMode(player, hyperWorld);
-                }
-            }
-        } else {
-            this.setDefaultGameMode(player, hyperWorld);
-        }
+
+        this.setDefaultGameMode(player, hyperWorld);
     }
 
     private boolean setDefaultGameMode(final @NonNull Player player, final @NonNull HyperWorld world) {

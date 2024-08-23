@@ -49,16 +49,6 @@ public class NMSImpl implements NMS {
     }
 
     @Override
-    public void writePlayerData(final @NonNull Player player, final @NonNull Path file) {
-        throw new UnsupportedOperationException("Not supported.");
-    }
-
-    @Override
-    public void readPlayerData(final @NonNull Player player, final @NonNull Path file, final @NonNull Runnable whenDone) {
-        throw new UnsupportedOperationException("Not supported.");
-    }
-
-    @Override
     public @Nullable Location findBedRespawn(final @NonNull Location spawnLocation) {
         throw new UnsupportedOperationException("Not supported.");
     }

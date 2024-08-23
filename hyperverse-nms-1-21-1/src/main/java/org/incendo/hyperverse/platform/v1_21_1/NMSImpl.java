@@ -57,37 +57,14 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.incendo.hyperverse.util.HyperConfigShouldGroupProfiles;
 import org.incendo.hyperverse.util.NMS;
 
 @SuppressWarnings("unused")
 public class NMSImpl implements NMS {
 
-    private final TaskChainFactory taskFactory;
     private Field entitySectionManager;
     private Field entityLookup;
     private org.apache.logging.log4j.core.Logger worldServerLogger;
-
-    @Inject public NMSImpl(final TaskChainFactory taskFactory, final @HyperConfigShouldGroupProfiles boolean hyperConfiguration) {
-        this.taskFactory = taskFactory;
-        if (hyperConfiguration) {
-            try {
-                final Field field = ServerLevel.class.getDeclaredField("LOGGER");
-                field.setAccessible(true);
-                this.worldServerLogger = (Logger) field.get(null);
-            } catch (final Exception e) {
-                e.printStackTrace();
-            }
-            try {
-                final RegexFilter regexFilter = RegexFilter
-                        .createFilter("[\\S\\s]*Force-added player with duplicate UUID[\\S\\s]*", null, false,
-                                Filter.Result.DENY, Filter.Result.ACCEPT);
-                this.worldServerLogger.addFilter(regexFilter);
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            }
-        }
-    }
 
     @Override @Nullable public Location getOrCreateNetherPortal(@NotNull final org.bukkit.entity.Entity entity,
                                                                 @NotNull final Location origin) {
@@ -121,116 +98,6 @@ public class NMSImpl implements NMS {
         return origin.getWorld().getSpawnLocation();
     }
 
-    @Override public void writePlayerData(@NotNull final Player player, @NotNull final Path file) {
-        final CompoundTag playerTag = new CompoundTag();
-        final net.minecraft.world.entity.player.Player entityPlayer = ((CraftPlayer) player).getHandle();
-        entityPlayer.save(playerTag);
-
-        if (!playerTag.contains("hyperverse")) {
-            playerTag.put("hyperverse", new CompoundTag());
-        }
-        final CompoundTag hyperverse = playerTag.getCompound("hyperverse");
-        hyperverse.putLong("writeTime", System.currentTimeMillis());
-        hyperverse.putString("version", Bukkit.getPluginManager().getPlugin("Hyperverse").getDescription().getVersion());
-
-        taskFactory.newChain().async(() -> {
-            try (final OutputStream outputStream = Files.newOutputStream(file)) {
-                NbtIo.writeCompressed(playerTag, outputStream);
-            } catch (final Exception e) {
-                e.printStackTrace();
-            }
-        }).execute();
-    }
-
-    @Override public void readPlayerData(@NotNull final Player player, @NotNull final Path file, @NotNull final Runnable whenDone) {
-        final Location originLocation = player.getLocation().clone();
-        taskFactory.newChain().asyncFirst(() -> {
-            try (final InputStream inputStream = Files.newInputStream(file)) {
-                return Optional.of(NbtIo.readCompressed(inputStream, NbtAccounter.unlimitedHeap()));
-            } catch (final Exception e) {
-                e.printStackTrace();
-            }
-            return Optional.empty();
-        }).syncLast((optionalCompound) -> {
-            if (!optionalCompound.isPresent()) {
-                return;
-            }
-            final CompoundTag compound = (CompoundTag) optionalCompound.get();
-            PaperLib.getChunkAtAsync(originLocation).thenAccept(chunk -> {
-                // Health and hunger don't update properly, so we
-                // give them a little help
-                final float health = compound.getFloat("Health");
-                final int foodLevel = compound.getInt("foodLevel");
-
-                // Restore bed spawn
-                final String spawnWorld = compound.getString("SpawnWorld");
-                final int spawnX = compound.getInt("SpawnX");
-                final int spawnY = compound.getInt("SpawnY");
-                final int spawnZ = compound.getInt("SpawnZ");
-                final Location spawnLocation = new Location(Bukkit.getWorld(spawnWorld), spawnX,
-                        spawnY, spawnZ);
-
-                final ServerPlayer entityPlayer = ((CraftPlayer) player).getHandle();
-
-                // We re-write the extra Bukkit data as to not
-                // mess up the profile
-                ((CraftPlayer) player).setExtraData(compound);
-                // Set the position to the player's current position
-                Vec3 pos = entityPlayer.position();
-                compound.put("Pos", doubleList(pos.x, pos.y, pos.z));
-                // Set the world to the player's current world
-                compound.putString("world", player.getWorld().getName());
-                // Store persistent values
-                ((CraftPlayer) player).storeBukkitValues(compound);
-
-                // We start by doing a total reset
-                entityPlayer.reset();
-                entityPlayer.load(compound);
-
-                entityPlayer.effectsDirty = true;
-                entityPlayer.onUpdateAbilities();
-                player.teleport(originLocation);
-
-                final ServerLevel worldServer = ((CraftWorld) originLocation.getWorld()).getHandle();
-                final DimensionType dimensionManager = worldServer.dimensionType();
-
-                // Prevent annoying message
-                // Spigot-obf = decouple()
-                entityPlayer.unRide();
-                worldServer.removePlayerImmediately(entityPlayer, Entity.RemovalReason.CHANGED_DIMENSION);
-                // worldServer.removePlayer above should remove the player from the
-                // map, but that doesn't always happen. This is a last effort
-                // attempt to prevent the annoying "Force re-added" message
-                // from appearing
-                try {
-                    if (this.entitySectionManager == null) {
-                        this.entitySectionManager = worldServer.getClass().getDeclaredField("entityManager");
-                        this.entitySectionManager.setAccessible(true);
-                    }
-                    final PersistentEntitySectionManager<Entity> esm = (PersistentEntitySectionManager<Entity>) this.entitySectionManager.get(worldServer);
-                    if (this.entityLookup == null) {
-                        this.entityLookup = esm.getClass().getDeclaredField("visibleEntityStorage");
-                    }
-                    final EntityLookup<Entity> lookup = (EntityLookup<Entity>) this.entityLookup.get(esm);
-                    lookup.remove(entityPlayer);
-                } catch (final NoSuchFieldException | IllegalAccessException e) {
-                    e.printStackTrace();
-                }
-
-                // pre 1.18 code = PlayerList#moveToWorld
-                entityPlayer.server.getPlayerList().remove(entityPlayer);
-                worldServer.getServer().getPlayerList().respawn(entityPlayer, true,
-                        Entity.RemovalReason.CHANGED_DIMENSION, PlayerRespawnEvent.RespawnReason.PLUGIN, originLocation);
-
-                // Apply health and foodLevel
-                player.setHealth(health);
-                player.setFoodLevel(foodLevel);
-                player.setPortalCooldown(40);
-                player.setBedSpawnLocation(spawnLocation, true);
-            });
-        }).execute(whenDone);
-    }
-
     @Override @Nullable public Location findBedRespawn(@NotNull final Location spawnLocation) {
         final CraftWorld craftWorld = (CraftWorld) spawnLocation.getWorld();
         if (craftWorld == null) {
@@ -243,13 +110,4 @@ public class NMSImpl implements NMS {
                 .map(pos -> new Location(spawnLocation.getWorld(), pos.x(), pos.y(), pos.z()))
                 .orElse(null);
     }
-
-    private static ListTag doubleList(final double... values) {
-        final ListTag tagList = new ListTag();
-        for (final double d : values) {
-            tagList.add(DoubleTag.valueOf(d));
-        }
-        return tagList;
-    }
-
 }

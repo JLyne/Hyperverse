@@ -180,14 +180,6 @@ public final class Hyperverse extends JavaPlugin implements HyperverseAPI, Liste
             getLogger().severe("Failed to load messages");
         }
 
-        if (this.hyperConfiguration.shouldGroupProfiles()) {
-            getLogger().warning("------------------ WARNING ------------------");
-            getLogger().warning("Per-world player data is still very experimental.");
-            getLogger().warning("This may cause your server to freeze, crash, etc.");
-            getLogger().warning("Use at your own risk!");
-            getLogger().warning("------------------ WARNING ------------------");
-        }
-
         if (!this.loadDatabase()) {
             getLogger().severe("Failed to connect to the database. Disabling!");
             this.getServer().getPluginManager().disablePlugin(this);
@@ -265,9 +257,6 @@ public final class Hyperverse extends JavaPlugin implements HyperverseAPI, Liste
                     "§8- §7keep spawns loaded? " + this.hyperConfiguration.shouldKeepSpawnLoaded());
             this.getLogger().info("§8- §7should detect worlds? " + this.hyperConfiguration
                     .shouldImportAutomatically());
-            this.getLogger().info(
-                    "§8- §7should separate player profiles? " + this.hyperConfiguration
-                            .shouldGroupProfiles());
         } catch (final Exception e) {
             e.printStackTrace();
             return false;
