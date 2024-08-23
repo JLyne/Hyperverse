@@ -18,24 +18,13 @@
 package org.incendo.hyperverse.platform.unsupported;
 
 import org.bukkit.Location;
-import org.bukkit.World;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.incendo.hyperverse.util.NMS;
 
-import java.util.Objects;
 
 @SuppressWarnings("unused")
 public class NMSImpl implements NMS {
-
-    @Override
-    public @Nullable Location getDimensionSpawn(final @NonNull Location origin) {
-        if (Objects.requireNonNull(origin.getWorld()).getEnvironment()
-                == World.Environment.THE_END) {
-            return new Location(origin.getWorld(), 100, 50, 0);
-        }
-        return origin.getWorld().getSpawnLocation();
-    }
 
     @Override
     public @Nullable Location findBedRespawn(final @NonNull Location spawnLocation) {

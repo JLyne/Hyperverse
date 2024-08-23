@@ -20,6 +20,7 @@ package org.incendo.hyperverse.teleportation;
 import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.type.Bed;
 import org.bukkit.entity.Entity;
@@ -170,7 +171,12 @@ public final class SimpleTeleportationManager implements TeleportationManager {
         if (destination == null || !destination.isLoaded()) {
             return null;
         }
-        return this.nms.getDimensionSpawn(Objects.requireNonNull(destination.getSpawn()));
+
+        if (destination.getBukkitWorld().getEnvironment() == World.Environment.THE_END) {
+            return new Location(destination.getBukkitWorld(), 100, 50, 0);
+        }
+
+        return destination.getSpawn();
     }
 
     @Override

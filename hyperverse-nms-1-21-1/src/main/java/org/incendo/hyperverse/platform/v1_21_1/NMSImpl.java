@@ -65,14 +65,6 @@ public class NMSImpl implements NMS {
     private Field entityLookup;
     private org.apache.logging.log4j.core.Logger worldServerLogger;
 
-    @Override @Nullable public Location getDimensionSpawn(@NotNull final Location origin) {
-        if (Objects.requireNonNull(origin.getWorld()).getEnvironment()
-                == World.Environment.THE_END) {
-            return new Location(origin.getWorld(), 100, 50, 0);
-        }
-        return origin.getWorld().getSpawnLocation();
-    }
-
     @Override @Nullable public Location findBedRespawn(@NotNull final Location spawnLocation) {
         final CraftWorld craftWorld = (CraftWorld) spawnLocation.getWorld();
         if (craftWorld == null) {

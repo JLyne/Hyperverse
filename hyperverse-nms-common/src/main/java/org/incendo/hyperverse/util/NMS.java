@@ -27,14 +27,6 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 public interface NMS {
 
     /**
-     * Get the spawn for the dimension containing the given location
-     *
-     * @param origin Origin location
-     * @return Dimension spawn
-     */
-    @Nullable Location getDimensionSpawn(@NonNull Location origin);
-
-    /**
      * Find the respawn location for a location that contains a bed
      *
      * @param spawnLocation Location to search from
