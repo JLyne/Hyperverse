@@ -12,10 +12,6 @@ it should be added to a version specific module.
 Code that rarely/never changes can use reflection directly,
 but does not necessarily have to.
 
-## World Interaction
-
-Load chunks asynchronously using PaperLib whenever possible.
-
 ## Dependency Injection
 
 Hypeverse uses Guice for dependency injection. 

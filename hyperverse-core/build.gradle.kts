@@ -26,7 +26,6 @@ dependencies {
     // TODO: Remove, because yuck.
     implementation("co.aikar:acf-paper:0.5.1-SNAPSHOT")
     implementation(libs.taskchain)
-    implementation(libs.paperlib)
     implementation(libs.guice) {
         exclude("com.google.guava", "guava")
     }
@@ -112,7 +111,6 @@ tasks {
             }
         }
 
-        relocate("io.papermc.lib", "org.incendo.hyperverse.libs.paperlib")
         relocate("org.bstats", "org.incendo.hyperverse.libs.bstats")
         relocate("co.aikar.commands", "org.incendo.hyperverse.libs.aikar.commands")
         relocate("co.aikar.locales", "org.incendo.hyperverse.libs.aikar.locales")

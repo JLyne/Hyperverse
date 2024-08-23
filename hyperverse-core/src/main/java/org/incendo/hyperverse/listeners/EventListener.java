@@ -19,7 +19,6 @@ package org.incendo.hyperverse.listeners;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
-import io.papermc.lib.PaperLib;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.boss.DragonBattle;
@@ -117,10 +116,8 @@ public final class EventListener implements Listener {
         this.scheduler = scheduler;
         this.plugin = plugin;
         this.nms = nms;
-        // Register pre-spawn listeners
-        if (PaperLib.isPaper()) {
-            pluginManager.registerEvents(new PaperListener(this.worldManager), plugin);
-        }
+
+        pluginManager.registerEvents(new PaperListener(this.worldManager), plugin);
     }
 
     /**
@@ -382,7 +379,7 @@ public final class EventListener implements Listener {
                 if (location != null) {
                     this.teleportationTimeout
                             .put(event.getEntity().getUniqueId(), System.currentTimeMillis());
-                    PaperLib.teleportAsync(event.getEntity(), location,
+                    event.getEntity().teleportAsync(location,
                             PlayerTeleportEvent.TeleportCause.COMMAND
                     );
                 } else {
@@ -407,7 +404,7 @@ public final class EventListener implements Listener {
             final Location destination =
                     hyperWorld.getTeleportationManager().endDestination(event.getEntity());
             if (destination != null) {
-                PaperLib.teleportAsync(event.getEntity(), destination,
+                event.getEntity().teleportAsync(destination,
                         PlayerTeleportEvent.TeleportCause.COMMAND
                 );
             }

@@ -19,7 +19,6 @@ package org.incendo.hyperverse.platform.v1_21_1;
 
 import co.aikar.taskchain.TaskChainFactory;
 import com.google.inject.Inject;
-import io.papermc.lib.PaperLib;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.Field;
