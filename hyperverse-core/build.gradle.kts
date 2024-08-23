@@ -32,7 +32,6 @@ dependencies {
     implementation(libs.assistedInject) {
         exclude("com.google.guava", "guava")
     }
-    implementation(libs.bstats)
     implementation(libs.configurateHocon)
     implementation(libs.cloudPaper)
     implementation(libs.cloudMinecraftExtras)
@@ -111,7 +110,6 @@ tasks {
             }
         }
 
-        relocate("org.bstats", "org.incendo.hyperverse.libs.bstats")
         relocate("co.aikar.commands", "org.incendo.hyperverse.libs.aikar.commands")
         relocate("co.aikar.locales", "org.incendo.hyperverse.libs.aikar.locales")
         relocate("co.aikar.taskchain", "org.incendo.hyperverse.libs.taskchain")

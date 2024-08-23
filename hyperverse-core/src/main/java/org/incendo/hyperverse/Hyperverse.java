@@ -24,7 +24,6 @@ import com.google.inject.Singleton;
 import com.google.inject.Stage;
 import io.leangen.geantyref.GenericTypeReflector;
 import io.leangen.geantyref.TypeToken;
-import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.event.EventHandler;
@@ -83,9 +82,6 @@ import java.util.logging.Logger;
  */
 @Singleton
 public final class Hyperverse extends JavaPlugin implements HyperverseAPI, Listener {
-
-    public static final int BSTATS_ID = 7177;
-
     private static HyperverseAPI instance;
 
     private final PluginFeatureManager pluginFeatureManager = new PluginFeatureManager(Bukkit.getServer());
@@ -218,9 +214,6 @@ public final class Hyperverse extends JavaPlugin implements HyperverseAPI, Liste
         } catch (final Exception e) {
             e.printStackTrace();
         }
-
-        // Initialize bStats metrics tracking
-        new Metrics(this, BSTATS_ID);
     }
 
     @Override

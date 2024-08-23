@@ -20,7 +20,6 @@ Lists of 29 third-party dependencies.
 - (MIT) [MiniMessage (me.minidigger:MiniMessage:1.0.1)](https://github.com/MiniDigger/MiniMessage)
 - (Apache License, Version 2.0) [ExpiringMap (net.jodah:expiringmap:0.5.8)](http://github.com/jhalterman/expiringmap/)
 - (The BSD 3-Clause License) [BungeeCord-Chat (net.md-5:bungeecord-chat:1.15-20200422.221048-64)](https://github.com/SpigotMC/BungeeCord/bungeecord-chat)
-- (The GNU Lesser General Public License v3.0) [bstats-bukkit (org.bstats:bstats-bukkit:1.7)](https://bstats.org/bstats-bukkit/)
 - (GNU General Public License, version 2 (GPL2), with the classpath exception)- (The MIT License) [Checker Qual (org.checkerframework:checker-qual:2.4.0)](https://checkerframework.org)
 - (GNU General Public License v3.0) [Spigot-API (org.spigotmc:spigot-api:1.15.2-R0.1-20200423.014400-96)](https://www.spigotmc.org/)
 - (Apache License, Version 2.0) [configurate-core (org.spongepowered:configurate-core:3.6.1)](https://github.com/SpongePowered/configurate/)

@@ -46,11 +46,6 @@ pve, pvp, world-permission, nether, end, profile-group, difficulty, creature-spa
 Contributions are very welcome. Some general contribution
 guidelines can be found in [CONTRIBUTING.md](https://github.com/Sauilitired/Hyperverse/blob/master/CONTRIBUTING.md)
 
-
-<p align="center">
-<img src="https://bstats.org/signatures/bukkit/Hyperverse.svg" />
-</p>
-
 ## Maven
 
 ```xml
