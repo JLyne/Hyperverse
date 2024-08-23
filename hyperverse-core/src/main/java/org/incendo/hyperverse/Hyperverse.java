@@ -49,8 +49,6 @@ import org.incendo.hyperverse.listeners.WorldListener;
 import org.incendo.hyperverse.modules.HyperWorldFactory;
 import org.incendo.hyperverse.modules.HyperverseModule;
 import org.incendo.hyperverse.modules.TaskFactoryModule;
-import org.incendo.hyperverse.platform.PlatformProvider;
-import org.incendo.hyperverse.platform.ReflectionPlatformProvider;
 import org.incendo.hyperverse.service.internal.SafeTeleportService;
 import org.incendo.hyperverse.util.MessageUtil;
 import org.incendo.hyperverse.util.versioning.Version;
@@ -128,11 +126,10 @@ public final class Hyperverse extends JavaPlugin implements HyperverseAPI, Liste
         if (!this.supportedVersions.contains(currentMcVersion)) {
             throw new UnsupportedOperationException("Current mc version: " + currentMcVersion + "is not supported");
         }
-        PlatformProvider platformProvider = new ReflectionPlatformProvider(currentMcVersion);
         try {
             this.injector = Guice.createInjector(
                     Stage.PRODUCTION,
-                    new HyperverseModule(getLogger(), this.servicePipeline, Bukkit.getServer(), platformProvider, this),
+                    new HyperverseModule(getLogger(), this.servicePipeline, Bukkit.getServer(), this),
                     new TaskFactoryModule()
             );
         } catch (final Exception e) {

@@ -37,7 +37,7 @@ import org.incendo.hyperverse.flags.implementation.NetherFlag;
 import org.incendo.hyperverse.flags.implementation.WorldPermissionFlag;
 import org.incendo.hyperverse.modules.PersistentLocationTransformer;
 import org.incendo.hyperverse.service.internal.SafeTeleportService;
-import org.incendo.hyperverse.util.NMS;
+import org.incendo.hyperverse.util.NMSUtil;
 import org.incendo.hyperverse.world.HyperWorld;
 import org.incendo.hyperverse.world.WorldManager;
 import org.incendo.hyperverse.world.WorldType;
@@ -55,7 +55,7 @@ public final class SimpleTeleportationManager implements TeleportationManager {
     private final WorldManager worldManager;
     private final HyperConfiguration configuration;
     private final HyperDatabase hyperDatabase;
-    private final NMS nms;
+    private final NMSUtil nmsUtil;
     private final PersistentLocationTransformer locationTransformer;
 
     @Inject
@@ -63,7 +63,7 @@ public final class SimpleTeleportationManager implements TeleportationManager {
             final @NonNull Hyperverse hyperverse,
             @Assisted final @NonNull HyperWorld hyperWorld,
             final @NonNull WorldManager worldManager,
-            final @NonNull NMS nms,
+            final @NonNull NMSUtil nmsUtil,
             final @NonNull HyperConfiguration configuration,
             final @NonNull HyperDatabase hyperDatabase,
             final @NonNull PersistentLocationTransformer locationTransformer
@@ -71,7 +71,7 @@ public final class SimpleTeleportationManager implements TeleportationManager {
         this.hyperverse = hyperverse;
         this.hyperWorld = hyperWorld;
         this.worldManager = worldManager;
-        this.nms = nms;
+        this.nmsUtil = nmsUtil;
         this.configuration = configuration;
         this.hyperDatabase = hyperDatabase;
         this.locationTransformer = locationTransformer;
@@ -191,7 +191,7 @@ public final class SimpleTeleportationManager implements TeleportationManager {
                 LocationType.BED_SPAWN
         ).map(this.locationTransformer::transform).orElse(null);
         if (spawnLocation != null && hasBedNearby(spawnLocation)) {
-            final Location adjustedLocation = this.nms.findBedRespawn(spawnLocation);
+            final Location adjustedLocation = this.nmsUtil.findBedRespawn(spawnLocation);
             if (adjustedLocation != null) {
                 return adjustedLocation;
             }

@@ -1,4 +1,3 @@
-import com.github.jengelman.gradle.plugins.shadow.ShadowPlugin
 import net.minecrell.pluginyml.bukkit.BukkitPluginDescription
 
 plugins {
@@ -7,17 +6,15 @@ plugins {
     alias(libs.plugins.shadow)
     alias(libs.plugins.run.paper)
     alias(libs.plugins.pluginyml)
+    alias(libs.plugins.paperweight.userdev)
 }
 
-apply {
-    plugin<ShadowPlugin>()
-}
+paperweight.reobfArtifactConfiguration = io.papermc.paperweight.userdev.ReobfArtifactConfiguration.MOJANG_PRODUCTION
 
 dependencies {
-    api(projects.hyperverseNmsCommon)
+    paperweight.paperDevBundle("1.21.1-R0.1-SNAPSHOT")
 
-    compileOnlyApi(libs.paper)
-
+    compileOnly(libs.paper)
     compileOnly(libs.multiverse)
     compileOnly(libs.myworlds)
     compileOnly(libs.essentialsx)
@@ -40,11 +37,6 @@ dependencies {
     // TODO: Remove and use native versions.
     implementation("net.kyori:adventure-platform-bukkit:4.3.2")
     implementation("net.kyori:adventure-text-minimessage:4.14.0")
-
-    implementation(projects.hyperverseNmsUnsupported)
-    runtimeOnly(project(":hyperverse-nms-1-21-1")) {
-        targetConfiguration = "reobf"
-    }
 }
 
 bukkit {
@@ -98,10 +90,6 @@ tasks {
     }
 
     shadowJar {
-        minimize {
-            exclude(project(":hyperverse-nms-unsupported"))
-            exclude(project(":hyperverse-nms-1-21-1"))
-        }
         mergeServiceFiles()
 
         dependencies {

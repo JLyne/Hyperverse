@@ -75,7 +75,6 @@ import org.incendo.hyperverse.flags.implementation.PvpFlag;
 import org.incendo.hyperverse.flags.implementation.RespawnWorldFlag;
 import org.incendo.hyperverse.modules.HyperEventFactory;
 import org.incendo.hyperverse.util.MessageUtil;
-import org.incendo.hyperverse.util.NMS;
 import org.incendo.hyperverse.world.HyperWorld;
 import org.incendo.hyperverse.world.WorldManager;
 import org.incendo.hyperverse.world.WorldType;
@@ -91,7 +90,6 @@ public final class EventListener implements Listener {
     private final HyperDatabase hyperDatabase;
     private final HyperConfiguration hyperConfiguration;
     private final Plugin plugin;
-    private final NMS nms;
     private final BukkitScheduler scheduler;
     private final HyperEventFactory hyperEventFactory;
 
@@ -103,8 +101,7 @@ public final class EventListener implements Listener {
             final @NonNull HyperEventFactory hyperEventFactory,
             final @NonNull PluginManager pluginManager,
             final @NonNull BukkitScheduler scheduler,
-            final @NonNull Plugin plugin,
-            final @NonNull NMS nms
+            final @NonNull Plugin plugin
     ) {
         this.worldManager = worldManager;
         this.hyperDatabase = hyperDatabase;
@@ -112,7 +109,6 @@ public final class EventListener implements Listener {
         this.hyperConfiguration = hyperConfiguration;
         this.scheduler = scheduler;
         this.plugin = plugin;
-        this.nms = nms;
 
         pluginManager.registerEvents(new PaperListener(this.worldManager), plugin);
     }

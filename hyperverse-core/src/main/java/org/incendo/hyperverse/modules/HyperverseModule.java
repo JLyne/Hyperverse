@@ -36,12 +36,9 @@ import org.incendo.hyperverse.events.SimpleHyperEventFactory;
 import org.incendo.hyperverse.flags.FlagContainer;
 import org.incendo.hyperverse.flags.GlobalWorldFlagContainer;
 import org.incendo.hyperverse.flags.WorldFlagContainer;
-import org.incendo.hyperverse.platform.PlatformProvider;
-import org.incendo.hyperverse.platform.PlatformProvisionException;
-import org.incendo.hyperverse.platform.unsupported.NMSImpl;
+import org.incendo.hyperverse.util.NMSUtil;
 import org.incendo.hyperverse.teleportation.SimpleTeleportationManager;
 import org.incendo.hyperverse.teleportation.TeleportationManager;
-import org.incendo.hyperverse.util.NMS;
 import org.incendo.hyperverse.world.HyperWorld;
 import org.incendo.hyperverse.world.HyperWorldCreator;
 import org.incendo.hyperverse.world.SimpleWorld;
@@ -59,20 +56,16 @@ public final class HyperverseModule extends AbstractModule {
     private final ServicePipeline servicePipeline;
     private final Server server;
 
-    private final PlatformProvider platformProvider;
-
     public HyperverseModule(
             final @NonNull Logger logger,
             final @NonNull ServicePipeline servicePipeline,
             final @NonNull Server server,
-            final @NonNull PlatformProvider platformProvider,
             final @NonNull Hyperverse hyperverse
     ) {
         this.logger = logger;
         this.hyperverse = hyperverse;
         this.servicePipeline = servicePipeline;
         this.server = server;
-        this.platformProvider = platformProvider;
     }
 
     @Override
@@ -81,18 +74,7 @@ public final class HyperverseModule extends AbstractModule {
         // Install the bukkit module
         install(new BukkitModule(this.server));
         install(ProviderMethodsModule.forModule(this));
-        // Resolve the NMS implementation
-        Class<? extends  NMS> nmsAdapter;
-        try {
-            nmsAdapter = this.platformProvider.providePlatform();
-        } catch (final PlatformProvisionException ex) {
-            new RuntimeException("Server version unsupported", ex).printStackTrace();
-            this.logger.severe(
-                    "Could not find a compatible NMS adapter. Some of Hyperverse's functionality will fail exceptionally."
-            );
-            nmsAdapter = NMSImpl.class;
-        }
-        bind(NMS.class).to(nmsAdapter).in(Singleton.class);
+        bind(NMSUtil.class).in(Singleton.class);
         bind(Plugin.class).toInstance(this.hyperverse);
         bind(Hyperverse.class).toInstance(this.hyperverse);
         bind(HyperDatabase.class).to(SQLiteDatabase.class).in(Singleton.class);

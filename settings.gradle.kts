@@ -9,8 +9,4 @@ pluginManagement {
 
 rootProject.name = "Hyperverse"
 
-include(":hyperverse-nms-common")
 include(":hyperverse-core")
-
-include(":hyperverse-nms-unsupported")
-include(":hyperverse-nms-1-21-1")
