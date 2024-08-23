@@ -19,25 +19,14 @@ package org.incendo.hyperverse.platform.unsupported;
 
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.Player;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.incendo.hyperverse.util.NMS;
 
-import java.nio.file.Path;
 import java.util.Objects;
 
 @SuppressWarnings("unused")
 public class NMSImpl implements NMS {
-
-    @Override
-    public @Nullable Location getOrCreateNetherPortal(
-            final @NonNull Entity entity,
-            final @NonNull Location origin
-    ) {
-        throw new UnsupportedOperationException("Not supported.");
-    }
 
     @Override
     public @Nullable Location getDimensionSpawn(final @NonNull Location origin) {

@@ -18,30 +18,13 @@
 package org.incendo.hyperverse.util;
 
 import org.bukkit.Location;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.Player;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
-
-import java.nio.file.Path;
 
 /**
  * Version specific NMS utility methods
  */
 public interface NMS {
-
-    /**
-     * Get the nether portal at the given location or create a new one
-     *
-     * @param entity Entity that is searching for the portal
-     * @param origin Origin location
-     * @return Portal location
-     */
-    @Nullable
-    Location getOrCreateNetherPortal(
-            @NonNull Entity entity,
-            @NonNull Location origin
-    );
 
     /**
      * Get the spawn for the dimension containing the given location

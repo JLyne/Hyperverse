@@ -65,30 +65,6 @@ public class NMSImpl implements NMS {
     private Field entityLookup;
     private org.apache.logging.log4j.core.Logger worldServerLogger;
 
-    @Override @Nullable public Location getOrCreateNetherPortal(@NotNull final org.bukkit.entity.Entity entity,
-                                                                @NotNull final Location origin) {
-        final ServerLevel worldServer = Objects.requireNonNull(((CraftWorld) origin.getWorld()).getHandle());
-        final PortalForcer portalTravelAgent = Objects.requireNonNull(worldServer.getPortalForcer());
-        final Entity nmsEntity = Objects.requireNonNull(((CraftEntity) entity).getHandle());
-        final BlockPos blockPosition = new BlockPos(origin.getBlockX(), origin.getBlockY(), origin.getBlockZ());
-        final WorldBorder worldBorder = worldServer.getWorldBorder();
-        Optional<BlockPos> existingPortalPosition = Objects.requireNonNull(portalTravelAgent, "travel agent")
-                .findClosestPortalPosition(Objects.requireNonNull(blockPosition, "position"), worldBorder,128);
-        if (existingPortalPosition.isPresent()) {
-            BlockPos bottomLeft = existingPortalPosition.get();
-            return new Location(origin.getWorld(), bottomLeft.getX(), bottomLeft.getY(), bottomLeft.getZ());
-        }
-        Optional<BlockUtil.FoundRectangle> createdPortal = portalTravelAgent.createPortal(blockPosition,
-                nmsEntity.getDirection().getAxis(), nmsEntity,
-                16);
-        if (createdPortal.isEmpty()) {
-            return null;
-        }
-        final BlockUtil.FoundRectangle rectangle = createdPortal.get();
-        return new Location(origin.getWorld(), rectangle.minCorner.getX() + 1D, rectangle.minCorner.getY() - 1D,
-                rectangle.minCorner.getZ() + 1D);
-    }
-
     @Override @Nullable public Location getDimensionSpawn(@NotNull final Location origin) {
         if (Objects.requireNonNull(origin.getWorld()).getEnvironment()
                 == World.Environment.THE_END) {

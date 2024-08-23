@@ -21,6 +21,7 @@ import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.PortalType;
 import org.bukkit.boss.DragonBattle;
 import org.bukkit.entity.Ambient;
 import org.bukkit.entity.Animals;
@@ -43,7 +44,6 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityPortalEnterEvent;
 import org.bukkit.event.entity.EntityPortalEvent;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 import org.bukkit.event.player.PlayerBedEnterEvent;
@@ -84,12 +84,9 @@ import javax.inject.Inject;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
 
 public final class EventListener implements Listener {
 
-    private final Cache<UUID, Long> teleportationTimeout =
-            CacheBuilder.newBuilder().expireAfterWrite(5L, TimeUnit.SECONDS).build();
     private final WorldManager worldManager;
     private final HyperDatabase hyperDatabase;
     private final HyperConfiguration hyperConfiguration;
@@ -296,13 +293,6 @@ public final class EventListener implements Listener {
             return;
         }
 
-        final Long lastTeleportion =
-                this.teleportationTimeout.getIfPresent(event.getPlayer().getUniqueId());
-        if (lastTeleportion != null && (System.currentTimeMillis() - lastTeleportion) < 5000L) {
-            event.setCancelled(true);
-            return;
-        }
-
         final Location destination;
         final boolean isNether;
 
@@ -334,8 +324,6 @@ public final class EventListener implements Listener {
                 MessageUtil.sendMessage(event.getPlayer(), Messages.messageNotPermittedEntry);
             } else {
                 event.setTo(destination);
-                this.teleportationTimeout
-                        .put(event.getPlayer().getUniqueId(), System.currentTimeMillis());
             }
         } else {
             final String flag =
@@ -350,50 +338,23 @@ public final class EventListener implements Listener {
     }
 
     @EventHandler
-    public void onEntityPortalEnter(final @NonNull EntityPortalEnterEvent event) {
-        if (event.getEntityType() == EntityType.PLAYER) {
-            return;
-        }
-
+    public void onEntityPortalEvent(final @NonNull EntityPortalEvent event) {
         final HyperWorld hyperWorld =
-                this.worldManager.getWorld(Objects.requireNonNull(event.getLocation().getWorld()));
+                this.worldManager.getWorld(Objects.requireNonNull(event.getFrom().getWorld()));
         if (hyperWorld == null) {
             return;
         }
 
-        final Long lastTeleportion =
-                this.teleportationTimeout.getIfPresent(event.getEntity().getUniqueId());
-        if (lastTeleportion != null && (System.currentTimeMillis() - lastTeleportion) < 5000L) {
-            return;
-        }
+        Location destination = null;
+        boolean isNether = false;
 
-        if (event.getLocation().getBlock().getType() == Material.NETHER_PORTAL && !hyperWorld
-                .getFlag(NetherFlag.class).isEmpty()) {
-            final Location destination = hyperWorld.getTeleportationManager()
-                    .netherDestination(event.getEntity(), event.getLocation());
-            if (destination != null) {
-                // Destination is the location from which we want to search, now we need to find the
-                // actual portal destination
-                final Location location =
-                        this.nms.getOrCreateNetherPortal(event.getEntity(), destination);
-                if (location != null) {
-                    this.teleportationTimeout
-                            .put(event.getEntity().getUniqueId(), System.currentTimeMillis());
-                    event.getEntity().teleportAsync(location,
-                            PlayerTeleportEvent.TeleportCause.COMMAND
-                    );
-                } else {
-                    this.plugin.getLogger().warning(String
-                            .format(
-                                    "Failed to find/create a portal surrounding %s",
-                                    destination.toString()
-                            ));
-                }
-            }
-        } else if (event.getLocation().getBlock().getType() == Material.END_PORTAL && !hyperWorld
-                .getFlag(EndFlag.class).isEmpty()) {
+        if (event.getPortalType() == PortalType.NETHER) {
+            isNether = true;
+            destination = hyperWorld.getTeleportationManager()
+                 .netherDestination(event.getEntity(), event.getFrom());
+        } else if (event.getPortalType() == PortalType.ENDER) {
             Location portalLocation;
-            final Location current = event.getLocation();
+            final Location current = event.getFrom();
             final DragonBattle battle = current.getWorld().getEnderDragonBattle();
             if (battle != null && (portalLocation = battle.getEndPortalLocation()) != null) {
                 current.clone().setY(portalLocation.getY());
@@ -401,34 +362,20 @@ public final class EventListener implements Listener {
                     return;
                 }
             }
-            final Location destination =
-                    hyperWorld.getTeleportationManager().endDestination(event.getEntity());
-            if (destination != null) {
-                event.getEntity().teleportAsync(destination,
-                        PlayerTeleportEvent.TeleportCause.COMMAND
-                );
+
+            destination = hyperWorld.getTeleportationManager()
+                 .endDestination(event.getEntity());
+        }
+
+        if (destination != null) {
+            event.setTo(destination);
+        } else {
+            final String flag =
+                    isNether ? hyperWorld.getFlag(NetherFlag.class) : hyperWorld.getFlag(EndFlag.class);
+            if (!flag.isEmpty()) {
+                event.setCancelled(true); // We do not want to allow default teleportation unless it has
+                // been configured
             }
-        }
-    }
-
-    @EventHandler
-    public void onEntityPortalEvent(final @NonNull EntityPortalEvent event) {
-        if (event.getEntityType() == EntityType.PLAYER) {
-            return;
-        }
-
-        final HyperWorld hyperWorld =
-                this.worldManager.getWorld(Objects.requireNonNull(event.getFrom().getWorld()));
-        if (hyperWorld == null) {
-            return;
-        }
-
-        if (event.getFrom().getBlock().getType() == Material.NETHER_PORTAL && !hyperWorld
-                .getFlag(NetherFlag.class).isEmpty()) {
-            event.setCancelled(true);
-        } else if (event.getFrom().getBlock().getType() == Material.END_PORTAL && !hyperWorld
-                .getFlag(EndFlag.class).isEmpty()) {
-            event.setCancelled(true);
         }
     }
 
