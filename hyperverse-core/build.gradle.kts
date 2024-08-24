@@ -33,10 +33,6 @@ dependencies {
     implementation(libs.cloudPaper)
     implementation(libs.cloudMinecraftExtras)
     implementation(libs.cloudMinecraftExtras)
-
-    // TODO: Remove and use native versions.
-    implementation("net.kyori:adventure-platform-bukkit:4.3.2")
-    implementation("net.kyori:adventure-text-minimessage:4.14.0")
 }
 
 bukkit {
@@ -103,7 +99,6 @@ tasks {
         relocate("co.aikar.taskchain", "org.incendo.hyperverse.libs.taskchain")
         relocate("co.aikar.util", "org.incendo.hyperverse.libs.aikar.util")
         relocate("net.jodah.expiringmap", "org.incendo.hyperverse.libs.expiringmap")
-        relocate("net.kyori", "org.incendo.hyperverse.libs.kyori")
         relocate("cloud.commandframework", "org.incendo.hyperverse.libs.cloud")
         relocate("org.spongepowered.configurate", "org.incendo.hyperverse.libs.configurate")
         relocate("io.leangen.geantyref", "org.incendo.hyperverse.libs.geantyref")
