@@ -41,7 +41,6 @@ import org.incendo.hyperverse.database.HyperDatabase;
 import org.incendo.hyperverse.exception.HyperWorldCreationException;
 import org.incendo.hyperverse.exception.HyperWorldValidationException;
 import org.incendo.hyperverse.features.PluginFeatureManager;
-import org.incendo.hyperverse.features.external.EssentialsFeature;
 import org.incendo.hyperverse.features.external.PlaceholderAPIFeature;
 import org.incendo.hyperverse.flags.implementation.SaveWorldFlag;
 import org.incendo.hyperverse.listeners.EventListener;
@@ -298,9 +297,6 @@ public final class Hyperverse extends JavaPlugin implements HyperverseAPI, Liste
         // Register default plugin features
         try {
             this.pluginFeatureManager.registerFeature("PlaceholderAPI", PlaceholderAPIFeature.class);
-            if (this.hyperConfiguration.shouldHookEssentials()) {
-                this.pluginFeatureManager.registerFeature("Essentials", EssentialsFeature.class);
-            }
         } catch (Exception e) {
             e.printStackTrace();
             return false;

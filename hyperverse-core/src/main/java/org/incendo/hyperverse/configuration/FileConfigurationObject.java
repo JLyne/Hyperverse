@@ -45,9 +45,6 @@ public final class FileConfigurationObject {
     @Setting(value = "safe-teleport")
     @Comment(value = "Whether or not safe teleportation should be enforced")
     private boolean safeTeleport = true;
-    @Setting(value = "hook-essentials")
-    @Comment(value = "Whether or not Hyperverse should attempt to utilize Essentials' specific features.")
-    private boolean hookEssentials = true;
     @Setting(value = "debug")
     @Comment(value = "Whether or not Hyperverse should print verbose debugging messages")
     private boolean debug = false;
@@ -70,10 +67,6 @@ public final class FileConfigurationObject {
 
     boolean shouldSafeTeleport() {
         return this.safeTeleport;
-    }
-
-    boolean shouldHookEssentials() {
-        return this.hookEssentials;
     }
 
     boolean shouldPrintDebug() {

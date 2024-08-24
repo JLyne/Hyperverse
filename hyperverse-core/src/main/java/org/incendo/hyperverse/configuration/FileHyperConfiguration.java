@@ -116,11 +116,6 @@ public final class FileHyperConfiguration implements HyperConfiguration {
     }
 
     @Override
-    public boolean shouldHookEssentials() {
-        return this.fileConfigurationObject.shouldHookEssentials();
-    }
-
-    @Override
     public boolean shouldPrintDebug() {
         return this.fileConfigurationObject.shouldPrintDebug();
     }

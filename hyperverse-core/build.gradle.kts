@@ -15,7 +15,6 @@ dependencies {
     paperweight.paperDevBundle("1.21.1-R0.1-SNAPSHOT")
 
     compileOnly(libs.paper)
-    compileOnly(libs.essentialsx)
     compileOnly(libs.placeholderapi)
 
     // TODO: Remove, because yuck.
@@ -42,9 +41,6 @@ paper {
     apiVersion = "1.21.1"
 
     serverDependencies {
-        register("Essentials") {
-            required = false
-        }
         register("PlaceholderAPI") {
             required = false
         }

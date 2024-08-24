@@ -68,14 +68,6 @@ public interface HyperConfiguration {
     boolean shouldSafeTeleport();
 
     /**
-     * Whether or not Hyperverse should hook into
-     * and attempt to utilize features present in Essentials.
-     *
-     * @return True if Hyperverse should hook into Essentials.
-     */
-    boolean shouldHookEssentials();
-
-    /**
      * Whether or not Hyperverse should print
      * verbose debugging messages
      *

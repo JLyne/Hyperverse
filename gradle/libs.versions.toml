@@ -18,7 +18,6 @@ taskchain = "3.7.2"
 configurate = "4.1.2"
 
 # Minecraft Plugins
-essentialsx = "2.20.1"
 placeholderapi = "2.11.5"
 
 [libraries]
@@ -38,7 +37,6 @@ taskchain = { group = "co.aikar", name = "taskchain-bukkit", version.ref = "task
 configurateHocon = { group = "org.spongepowered", name = "configurate-hocon", version.ref = "configurate"}
 
 # Minecraft Plugins
-essentialsx = { group = "net.essentialsx", name = "EssentialsX", version.ref = "essentialsx" }
 placeholderapi = { group = "me.clip", name = "placeholderapi", version.ref = "placeholderapi" }
 
 [plugins]
