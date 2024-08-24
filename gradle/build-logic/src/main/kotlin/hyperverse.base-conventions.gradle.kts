@@ -26,7 +26,6 @@ repositories {
     maven("https://repo.papermc.io/repository/maven-public/")
     maven("https://repo.codemc.org/repository/maven-public/")
     maven("https://repo.spongepowered.org/maven")
-    maven("https://repo.onarandombox.com/content/repositories/multiverse/")
     maven("https://repo.extendedclip.com/content/repositories/placeholderapi/")
     maven("https://ci.mg-dev.eu/plugin/repository/everything/")
     maven("https://repo.essentialsx.net/releases/")

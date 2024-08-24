@@ -18,8 +18,6 @@ taskchain = "3.7.2"
 configurate = "4.1.2"
 
 # Minecraft Plugins
-multiverse = "4.3.1"
-myworlds = "1.20.4-v3"
 essentialsx = "2.20.1"
 placeholderapi = "2.11.5"
 
@@ -40,8 +38,6 @@ taskchain = { group = "co.aikar", name = "taskchain-bukkit", version.ref = "task
 configurateHocon = { group = "org.spongepowered", name = "configurate-hocon", version.ref = "configurate"}
 
 # Minecraft Plugins
-multiverse = { group = "com.onarandombox.multiversecore", name = "Multiverse-Core", version.ref = "multiverse" }
-myworlds = { group = "com.bergerkiller.bukkit", name = "MyWorlds", version.ref = "myworlds" }
 essentialsx = { group = "net.essentialsx", name = "EssentialsX", version.ref = "essentialsx" }
 placeholderapi = { group = "me.clip", name = "placeholderapi", version.ref = "placeholderapi" }
 

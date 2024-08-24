@@ -75,7 +75,6 @@ import org.incendo.hyperverse.flags.implementation.NetherFlag;
 import org.incendo.hyperverse.flags.implementation.ProfileGroupFlag;
 import org.incendo.hyperverse.modules.HyperWorldFactory;
 import org.incendo.hyperverse.modules.WorldConfigurationFactory;
-import org.incendo.hyperverse.modules.WorldImporterFactory;
 import org.incendo.hyperverse.util.IncendoPaster;
 import org.incendo.hyperverse.util.MessageUtil;
 import org.incendo.hyperverse.util.SeedUtil;
@@ -120,7 +119,6 @@ public final class HyperCloudCommandManager extends BaseCommand {
     private final WorldManager worldManager;
     private final FileHyperConfiguration fileHyperConfiguration;
     private final HyperWorldFactory hyperWorldFactory;
-    private final WorldImporterFactory worldImporterFactory;
     private final WorldConfigurationFactory worldConfigurationFactory;
     private final GlobalWorldFlagContainer globalFlagContainer;
     private final TaskChainFactory taskChainFactory;
@@ -133,7 +131,6 @@ public final class HyperCloudCommandManager extends BaseCommand {
             final Hyperverse hyperverse,
             final WorldManager worldManager,
             final HyperWorldFactory hyperWorldFactory,
-            final WorldImporterFactory worldImporterFactory,
             final WorldConfigurationFactory worldConfigurationFactory,
             final GlobalWorldFlagContainer globalFlagContainer,
             final TaskChainFactory taskFactory,
@@ -143,7 +140,6 @@ public final class HyperCloudCommandManager extends BaseCommand {
         this.hyperverse = hyperverse;
         this.worldManager = Objects.requireNonNull(worldManager);
         this.hyperWorldFactory = Objects.requireNonNull(hyperWorldFactory);
-        this.worldImporterFactory = Objects.requireNonNull(worldImporterFactory);
         this.worldConfigurationFactory = Objects.requireNonNull(worldConfigurationFactory);
         this.globalFlagContainer = Objects.requireNonNull(globalFlagContainer);
         this.taskChainFactory = Objects.requireNonNull(taskFactory);
@@ -1245,29 +1241,6 @@ public final class HyperCloudCommandManager extends BaseCommand {
             } catch (final Exception ignored) {
             }
         }).execute();
-    }
-
-    @Subcommand("multiverse")
-    @CommandPermission("hyperverse.plugin.import")
-    @Description("{@@command.multiverse}")
-    public void doMultiverse(final CommandSender sender) {
-        if (this.server.getPluginManager().isPluginEnabled("Multiverse-Core")) {
-            this.worldImporterFactory.createMultiverseImporter(this.hyperWorldFactory).performImport(sender);
-        } else {
-            MessageUtil.sendMessage(sender, Messages.messageImportPluginMissing, "%plugin%", "Multiverse");
-        }
-    }
-
-    @Subcommand("myworlds")
-    @CommandPermission("hyperverse.plugin.import")
-    public void doMyWorlds(final CommandSender sender) {
-        if (this.server.getPluginManager().isPluginEnabled("My_Worlds")) {
-            this.worldImporterFactory.createMyWorldsImporter(this.hyperWorldFactory).performImport(sender);
-        } else {
-            MessageUtil
-                    .sendMessage(sender, Messages.messageImportPluginMissing, "%plugin%", "MyWorlds");
-
-        }
     }
 
     @Subcommand("plugin")

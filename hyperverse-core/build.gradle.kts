@@ -15,8 +15,6 @@ dependencies {
     paperweight.paperDevBundle("1.21.1-R0.1-SNAPSHOT")
 
     compileOnly(libs.paper)
-    compileOnly(libs.multiverse)
-    compileOnly(libs.myworlds)
     compileOnly(libs.essentialsx)
     compileOnly(libs.placeholderapi)
 
@@ -45,12 +43,6 @@ paper {
 
     serverDependencies {
         register("Essentials") {
-            required = false
-        }
-        register("Multiverse") {
-            required = false
-        }
-        register("MyWorlds") {
             required = false
         }
         register("PlaceholderAPI") {

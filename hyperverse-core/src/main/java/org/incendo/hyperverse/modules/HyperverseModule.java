@@ -89,7 +89,6 @@ public final class HyperverseModule extends AbstractModule {
                 .build(HyperWorldCreatorFactory.class));
         install(new FactoryModuleBuilder().implement(HyperWorld.class, SimpleWorld.class)
                 .build(HyperWorldFactory.class));
-        install(new FactoryModuleBuilder().build(WorldImporterFactory.class));
         install(new FactoryModuleBuilder().implement(FlagContainer.class, WorldFlagContainer.class)
                 .build(FlagContainerFactory.class));
         install(new FactoryModuleBuilder().implement(

@@ -448,10 +448,6 @@ public final class Messages {
             "command.debugpaste",
             "Create a debug paste. This will upload your configuration files to Athion. Beware!"
     );
-    public static final @NonNull Message commandDescriptionMultiverse = createMessage(
-            "command.multiverse",
-            "Import Multiverse configurations"
-    );
     public static final @NonNull Message commandDescriptionPlugin = createMessage(
             "command.plugin",
             "Show plugin information"
