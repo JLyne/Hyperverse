@@ -18,7 +18,6 @@
 package org.incendo.hyperverse.util;
 
 import net.kyori.adventure.text.minimessage.MiniMessage;
-import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.incendo.hyperverse.configuration.Message;
@@ -76,24 +75,9 @@ public final class MessageUtil {
         if (replacedMessage.isEmpty()) {
             return;
         }
-        if (replacedMessage.contains("<") && replacedMessage.contains(">")) {
-            final String prefixedMessage;
-            if (replacedMessage.contains(ChatColor.COLOR_CHAR + "")) {
-                prefixedMessage = ChatColor.translateAlternateColorCodes(
-                        '&',
-                        Messages.messagePrefix.toString() + replacedMessage
-                );
-            } else {
-                prefixedMessage = Messages.messagePrefixFancy.toString() + replacedMessage;
-            }
-            recipient.sendMessage(MINI_MESSAGE.deserialize(prefixedMessage));
-        } else {
-            final String prefixedMessage = ChatColor.translateAlternateColorCodes(
-                    '&',
-                    Messages.messagePrefix.toString() + replacedMessage
-            );
-            recipient.sendMessage(prefixedMessage);
-        }
+
+        final String prefixedMessage = Messages.messagePrefixFancy.toString() + replacedMessage;
+        recipient.sendMessage(MINI_MESSAGE.deserialize(prefixedMessage));
     }
 
 }

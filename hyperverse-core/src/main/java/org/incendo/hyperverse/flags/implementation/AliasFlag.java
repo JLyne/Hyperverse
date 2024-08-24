@@ -46,7 +46,7 @@ public final class AliasFlag extends WorldFlag<String, AliasFlag> {
 
     @Override
     public String getExample() {
-        return "&cFancy World Name";
+        return "<red>Fancy World Name";
     }
 
     @Override

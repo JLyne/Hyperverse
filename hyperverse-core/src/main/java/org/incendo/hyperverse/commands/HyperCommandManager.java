@@ -19,10 +19,8 @@ package org.incendo.hyperverse.commands;
 
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.BukkitCommandManager;
-import co.aikar.commands.BukkitMessageFormatter;
 import co.aikar.commands.CommandHelp;
 import co.aikar.commands.InvalidCommandArgument;
-import co.aikar.commands.MessageType;
 import co.aikar.commands.PaperCommandManager;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandCompletion;
@@ -47,7 +45,6 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
-import org.checkerframework.checker.nullness.qual.NonNull;
 import org.incendo.hyperverse.Hyperverse;
 import org.incendo.hyperverse.configuration.FileHyperConfiguration;
 import org.incendo.hyperverse.configuration.Message;
@@ -126,43 +123,7 @@ public final class HyperCommandManager extends BaseCommand {
         this.bukkitCommandManager = new PaperCommandManager(hyperverse);
         this.bukkitCommandManager.usePerIssuerLocale(true, true);
         this.bukkitCommandManager.getLocales().addMessages(Locale.ENGLISH, Messages.getMessages());
-        this.bukkitCommandManager.setDefaultFormatter(new BukkitMessageFormatter(ChatColor.GRAY) {
-            @Override
-            public String format(final @NonNull String message) {
-                return ChatColor.translateAlternateColorCodes('&', Messages.messagePrefix.toString())
-                        + super.format(message);
-            }
-        });
-        this.bukkitCommandManager.setFormat(
-                MessageType.ERROR,
-                new BukkitMessageFormatter(ChatColor.RED, ChatColor.GOLD, ChatColor.WHITE) {
-                    @Override
-                    public String format(final String message) {
-                        return ChatColor.translateAlternateColorCodes('&', Messages.messagePrefix.toString())
-                                + ChatColor.RED + super.format(message);
-                    }
-                }
-        );
-        this.bukkitCommandManager.setFormat(
-                MessageType.SYNTAX,
-                new BukkitMessageFormatter(ChatColor.GRAY, ChatColor.GOLD, ChatColor.WHITE) {
-                    @Override
-                    public String format(final String message) {
-                        return ChatColor.translateAlternateColorCodes('&', Messages.messagePrefix.toString())
-                                + ChatColor.GRAY + super.format(message);
-                    }
-                }
-        );
-        this.bukkitCommandManager.setFormat(
-                MessageType.HELP,
-                new BukkitMessageFormatter(ChatColor.GRAY, ChatColor.GOLD, ChatColor.WHITE) {
-                    @Override
-                    public String format(final String message) {
-                        return ChatColor.translateAlternateColorCodes('&', Messages.messagePrefix.toString())
-                                + ChatColor.GRAY + super.format(message);
-                    }
-                }
-        );
+
         this.bukkitCommandManager.getCommandCompletions().registerAsyncCompletion(
                 "hyperworlds",
                 context -> worldManager.getWorlds().stream().filter(hyperWorld -> {
