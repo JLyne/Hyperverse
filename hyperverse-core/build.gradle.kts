@@ -35,13 +35,29 @@ dependencies {
     implementation(libs.cloudMinecraftExtras)
 }
 
-bukkit {
+paper {
     name = "Hyperverse"
     website = "https://github.com/incendo/Hyperverse"
     authors = listOf("Citymonstret", "andrewandy")
     main = "org.incendo.hyperverse.Hyperverse"
-    softDepend = listOf("Essentials", "Multiverse", "MyWorlds")
+    version = project.version.toString()
     apiVersion = "1.21.1"
+
+    serverDependencies {
+        register("Essentials") {
+            required = false
+        }
+        register("Multiverse") {
+            required = false
+        }
+        register("MyWorlds") {
+            required = false
+        }
+        register("PlaceholderAPI") {
+            required = false
+        }
+    }
+
     permissions {
         mapOf(
             "worlds" to "Allows players to use the Hyperverse command",
@@ -79,12 +95,6 @@ bukkit {
 }
 
 tasks {
-    processResources {
-        filesMatching("plugin.yml") {
-            expand("version" to project.version)
-        }
-    }
-
     shadowJar {
         mergeServiceFiles()
 

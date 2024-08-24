@@ -52,4 +52,4 @@ cloud-buildLogic-rootProject-publishing = { id = "org.incendo.cloud-build-logic.
 cloud-buildLogic-rootProject-spotless = { id = "org.incendo.cloud-build-logic.spotless.root-project", version.ref = "cloud-build-logic" }
 shadow = { id = "com.gradleup.shadow", version.ref = "shadow" }
 run-paper = { id = "xyz.jpenilla.run-paper", version.ref = "run-paper" }
-pluginyml = { id = "net.minecrell.plugin-yml.bukkit", version.ref = "pluginyml" }
+pluginyml = { id = "net.minecrell.plugin-yml.paper", version.ref = "pluginyml" }
