@@ -23,7 +23,6 @@ import org.bukkit.WorldCreator;
 import org.bukkit.WorldType;
 import org.bukkit.generator.ChunkGenerator;
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.incendo.hyperverse.util.NullRouteCommandSender;
 
 import java.util.Objects;
 
@@ -50,9 +49,7 @@ public final class HyperWorldCreator extends WorldCreator {
         if (!worldConfiguration.getGenerator().isEmpty()
                 && !worldConfiguration.getGenerator().equalsIgnoreCase("vanilla")) {
             final ChunkGenerator chunkGenerator =
-                    getGeneratorForName(worldConfiguration.getName(), this.getJoinedName(),
-                            NullRouteCommandSender.getInstance()
-                    );
+                    getGeneratorForName(worldConfiguration.getName(), this.getJoinedName(), null);
             if (chunkGenerator == null) {
                 return ValidationResult.UNKNOWN_GENERATOR;
             }
@@ -74,7 +71,7 @@ public final class HyperWorldCreator extends WorldCreator {
         this.generatorSettings(worldConfiguration.getSettings());
         this.seed(worldConfiguration.getSeed());
         this.generateStructures(worldConfiguration.isGenerateStructures());
-        this.generator(this.getJoinedName(), NullRouteCommandSender.getInstance());
+        this.generator(this.getJoinedName());
     }
 
     private @NonNull String getJoinedName() {

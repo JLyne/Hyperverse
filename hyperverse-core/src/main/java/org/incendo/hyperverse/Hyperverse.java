@@ -216,7 +216,7 @@ public final class Hyperverse extends JavaPlugin implements HyperverseAPI, Liste
         // This will only make sense if this isn't a /reload or an unloadplugin/disableplugin. If it is, I feel really, really sorry for the server.
         this.worldManager.getWorlds().forEach(hyperWorld -> {
             if (hyperWorld.isLoaded() && !hyperWorld.getFlag(SaveWorldFlag.class)) {
-                hyperWorld.getBukkitWorld().getPlayers().forEach(player -> player.kickPlayer(Bukkit.getShutdownMessage()));
+                hyperWorld.getBukkitWorld().getPlayers().forEach(player -> player.kick(Bukkit.shutdownMessage()));
                 hyperWorld.unloadWorld(false);
 
                 // setLoaded(true) because it was loaded before, so it loads again on startup.

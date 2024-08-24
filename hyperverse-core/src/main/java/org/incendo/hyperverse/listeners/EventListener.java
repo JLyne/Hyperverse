@@ -17,8 +17,6 @@
 
 package org.incendo.hyperverse.listeners;
 
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.PortalType;
