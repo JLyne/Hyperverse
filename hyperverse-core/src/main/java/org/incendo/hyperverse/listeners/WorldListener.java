@@ -34,6 +34,7 @@ import org.incendo.hyperverse.world.SimpleWorldManager;
 import org.incendo.hyperverse.world.WorldManager;
 
 import java.util.Objects;
+import java.util.logging.Level;
 
 public final class WorldListener implements Listener {
 
@@ -59,9 +60,7 @@ public final class WorldListener implements Listener {
         if (this.worldManager.shouldIgnore(world.getName())) {
             return;
         }
-        MessageUtil.sendMessage(this.server.getConsoleSender(),
-                Messages.messageWorldLoadDetected, "%world%", world.getName()
-        );
+        MessageUtil.logMessage(Level.INFO, Messages.messageWorldLoadDetected, "%world%", world.getName());
         HyperWorld hyperWorld = this.worldManager.getWorld(world);
         if (hyperWorld != null
                 || (hyperWorld = this.worldManager.getWorld(world.getName())) != null) {
@@ -77,8 +76,7 @@ public final class WorldListener implements Listener {
             final WorldManager.WorldImportResult result =
                     this.worldManager.importWorld(world, false, null);
             if (result == WorldManager.WorldImportResult.SUCCESS) {
-                MessageUtil
-                        .sendMessage(this.server.getConsoleSender(), Messages.messageWorldImportedOnLoad,
+                MessageUtil.logMessage(Level.INFO, Messages.messageWorldImportedOnLoad,
                                 "%world%", world.getName(), "%generator%",
                                 Objects.requireNonNull(this.worldManager.getWorld(world)).getConfiguration()
                                         .getGenerator()

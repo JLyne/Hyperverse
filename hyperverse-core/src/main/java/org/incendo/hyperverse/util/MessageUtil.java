@@ -20,10 +20,12 @@ package org.incendo.hyperverse.util;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.command.CommandSender;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.incendo.hyperverse.Hyperverse;
 import org.incendo.hyperverse.configuration.Message;
 import org.incendo.hyperverse.configuration.Messages;
 
 import java.util.Objects;
+import java.util.logging.Level;
 
 /**
  * Message utility methods
@@ -80,4 +82,16 @@ public final class MessageUtil {
         recipient.sendMessage(MINI_MESSAGE.deserialize(prefixedMessage));
     }
 
+    public static void logMessage(
+            final @NonNull Level logLevel,
+            final @NonNull Message message, final @NonNull String... replacements
+    ) {
+        Objects.requireNonNull(logLevel);
+        final String replacedMessage = format(message.toString(), replacements);
+        if (replacedMessage.isEmpty()) {
+            return;
+        }
+
+        ((Hyperverse) Hyperverse.getApi()).getLogger().log(logLevel, replacedMessage);
+    }
 }

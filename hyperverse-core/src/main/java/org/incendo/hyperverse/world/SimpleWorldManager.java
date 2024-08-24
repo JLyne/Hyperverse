@@ -49,6 +49,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.logging.Level;
 import java.util.stream.Stream;
 
 /**
@@ -100,10 +101,7 @@ public final class SimpleWorldManager implements WorldManager, Listener {
             }
         }
         if (Files.exists(worldsPath) && Files.isDirectory(worldsPath)) {
-            MessageUtil
-                    .sendMessage(this.server.getConsoleSender(), Messages.messageWorldsLoading, "%path%",
-                            worldsPath.toString()
-                    );
+            MessageUtil.logMessage(Level.INFO, Messages.messageWorldsLoading, "%path%", worldsPath.toString());
             try (final Stream<Path> stream = Files.list(worldsPath)){
                 stream.forEach(path -> {
                     final WorldConfiguration worldConfiguration = this.worldConfigurationFactory.fromFile(path);
@@ -136,7 +134,7 @@ public final class SimpleWorldManager implements WorldManager, Listener {
                 }
             }
         }
-        MessageUtil.sendMessage(this.server.getConsoleSender(), Messages.messageWorldLoaded, "%num%",
+        MessageUtil.logMessage(Level.INFO, Messages.messageWorldLoaded, "%num%",
                 Integer.toString(this.worldMap.size())
         );
         // Now create the worlds
@@ -162,7 +160,7 @@ public final class SimpleWorldManager implements WorldManager, Listener {
             }
             if (hyperWorld.getBukkitWorld() == null) {
                 if (!GeneratorUtil.isGeneratorAvailable(hyperWorld.getConfiguration().getGenerator())) {
-                    MessageUtil.sendMessage(this.server.getConsoleSender(), Messages.messageGeneratorNotAvailable,
+                    MessageUtil.logMessage(Level.WARNING, Messages.messageGeneratorNotAvailable,
                             "%world%", hyperWorld.getConfiguration().getName(),
                             "%generator%", hyperWorld.getConfiguration().getGenerator()
                     );
@@ -179,7 +177,7 @@ public final class SimpleWorldManager implements WorldManager, Listener {
     @EventHandler
     public void onPluginLoad(final @NonNull PluginEnableEvent enableEvent) {
         for (final HyperWorld hyperWorld : this.waitingForPlugin.get(enableEvent.getPlugin().getName().toLowerCase())) {
-            MessageUtil.sendMessage(this.server.getConsoleSender(), Messages.messageGeneratorAvailable,
+            MessageUtil.logMessage(Level.INFO, Messages.messageGeneratorAvailable,
                     "%world%", hyperWorld.getConfiguration().getName()
             );
             this.attemptCreate(hyperWorld);

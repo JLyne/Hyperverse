@@ -29,6 +29,7 @@ import java.lang.reflect.Constructor;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.logging.Level;
 
 /**
  * Manager for {@link PluginFeature plugin features}
@@ -73,7 +74,8 @@ public final class PluginFeatureManager {
      * Load all features
      */
     public void loadFeatures() {
-        MessageUtil.sendMessage(this.server.getConsoleSender(), Messages.messageFeaturesLoading, "%num%",
+        MessageUtil.logMessage(
+                Level.INFO, Messages.messageFeaturesLoading, "%num%",
                 Integer.toString(this.registeredFeatures.size())
         );
         for (final String feature : this.registeredFeatures.keySet()) {
@@ -110,7 +112,7 @@ public final class PluginFeatureManager {
             final PluginFeature feature = featureConstructor.newInstance();
             feature.initializeFeature();
 
-            MessageUtil.sendMessage(this.server.getConsoleSender(), Messages.messageFeatureLoaded, "%plugin%", name,
+            MessageUtil.logMessage(Level.INFO, Messages.messageFeatureLoaded, "%plugin%", name,
                     "%feature%", featureConstructor.getDeclaringClass().getSimpleName()
             );
         } catch (final Exception e) {
