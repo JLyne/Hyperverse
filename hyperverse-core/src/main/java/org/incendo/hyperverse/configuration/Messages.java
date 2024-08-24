@@ -235,18 +235,6 @@ public final class Messages {
             "world.not_safe",
             "&cTeleportation to that location is not safe. An attempt to find a safe destination will be made."
     );
-    public static final @NonNull Message messageLogTooBig = createMessage(
-            "paste.log_too_big",
-            "&clatest.log is too big to be pasted, will ignore"
-    );
-    public static final @NonNull Message messagePasteUpload = createMessage(
-            "paste.uploaded",
-            "&7The paste file has been uploaded to: %paste%"
-    );
-    public static final @NonNull Message messagePasteFailed = createMessage(
-            "paste.failed",
-            "&cFailed to create the debug paste. Reason: %reason%"
-    );
     public static final @NonNull Message messageInvalidProfileGroup =
             createMessage("invalid.profile_group", "&cThat is not a valid profile group");
     public static final @NonNull Message messageInvalidGameRule = createMessage(
@@ -443,10 +431,6 @@ public final class Messages {
     public static final @NonNull Message commandDescriptionReload = createMessage(
             "command.reload",
             "Reload the Hyperverse configuration files"
-    );
-    public static final @NonNull Message commandDescriptionDebugPaste = createMessage(
-            "command.debugpaste",
-            "Create a debug paste. This will upload your configuration files to Athion. Beware!"
     );
     public static final @NonNull Message commandDescriptionPlugin = createMessage(
             "command.plugin",

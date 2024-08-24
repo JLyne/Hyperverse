@@ -69,7 +69,6 @@ paper {
             "flag.info" to "Allows players to view information regarding a flag in a given world",
             "gamerule.set" to "Allows players to world set gamerules",
             "delete" to "Allows players to delete worlds",
-            "debugpaste" to "Allows players to create debug pastes",
             "who" to "Allows players to list players",
             "plugin.import" to "Allows players to import configurations from external plugins",
             "regenerate" to "Allows players to regenerate worlds"
