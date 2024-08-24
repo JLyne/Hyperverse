@@ -50,8 +50,6 @@ import org.incendo.hyperverse.modules.HyperverseModule;
 import org.incendo.hyperverse.modules.TaskFactoryModule;
 import org.incendo.hyperverse.service.internal.SafeTeleportService;
 import org.incendo.hyperverse.util.MessageUtil;
-import org.incendo.hyperverse.util.versioning.Version;
-import org.incendo.hyperverse.util.versioning.VersionUtil;
 import org.incendo.hyperverse.world.HyperWorld;
 import org.incendo.hyperverse.world.HyperWorldCreator;
 import org.incendo.hyperverse.world.WorldConfiguration;
@@ -84,8 +82,8 @@ public final class Hyperverse extends JavaPlugin implements HyperverseAPI, Liste
     private final PluginFeatureManager pluginFeatureManager = new PluginFeatureManager(Bukkit.getServer());
     private final ServicePipeline servicePipeline = ServicePipeline.builder().build();
 
-    private final List<Version> supportedVersions = List.of(
-            Version.parseMinecraft("1.21.1")
+    private final List<String> supportedVersions = List.of(
+            "1.21.1"
     );
 
     private WorldManager worldManager;
@@ -121,7 +119,7 @@ public final class Hyperverse extends JavaPlugin implements HyperverseAPI, Liste
                 throw new RuntimeException("Could not create Hyperverse main directory");
             }
         }
-        Version currentMcVersion = VersionUtil.parseMinecraftVersion(Bukkit.getBukkitVersion());
+        String currentMcVersion = Bukkit.getMinecraftVersion();
         if (!this.supportedVersions.contains(currentMcVersion)) {
             throw new UnsupportedOperationException("Current mc version: " + currentMcVersion + "is not supported");
         }
