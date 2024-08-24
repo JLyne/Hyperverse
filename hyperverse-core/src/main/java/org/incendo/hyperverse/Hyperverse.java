@@ -232,12 +232,12 @@ public final class Hyperverse extends JavaPlugin implements HyperverseAPI, Liste
     private boolean loadConfiguration() {
         try {
             this.hyperConfiguration = this.injector.getInstance(HyperConfiguration.class);
-            this.getLogger().info("§6Hyperverse Options");
-            this.getLogger().info("§8- §7use persistent locations? " + this.hyperConfiguration
+            this.getLogger().info("Hyperverse Options");
+            this.getLogger().info("- use persistent locations? " + this.hyperConfiguration
                     .shouldPersistLocations());
             this.getLogger().info(
-                    "§8- §7keep spawns loaded? " + this.hyperConfiguration.shouldKeepSpawnLoaded());
-            this.getLogger().info("§8- §7should detect worlds? " + this.hyperConfiguration
+                    "- keep spawns loaded? " + this.hyperConfiguration.shouldKeepSpawnLoaded());
+            this.getLogger().info("- should detect worlds? " + this.hyperConfiguration
                     .shouldImportAutomatically());
         } catch (final Exception e) {
             e.printStackTrace();
@@ -273,7 +273,7 @@ public final class Hyperverse extends JavaPlugin implements HyperverseAPI, Liste
     @SuppressWarnings("unchecked")
     private void logHookInformation() {
         final Logger logger = getLogger();
-        logger.info("§6Hyperverse Plugin Hooks (Registered)");
+        logger.info("Hyperverse Plugin Hooks (Registered)");
         if (!this.pluginFeatureManager.getRegisteredFeatures().isEmpty()) {
             for (String feature : this.pluginFeatureManager.getRegisteredFeatures()) {
                 logger.info("- " + feature);
@@ -281,7 +281,7 @@ public final class Hyperverse extends JavaPlugin implements HyperverseAPI, Liste
         } else {
             logger.info("- No Hooks Detected");
         }
-        logger.info("§6Hyperverse Services (Internal) ");
+        logger.info("Hyperverse Services (Internal) ");
         for (Type type : this.servicePipeline.getRecognizedTypes()) {
             logger.info("- " + GenericTypeReflector.erase(type).getSimpleName() + ":");
             logger.info("    Implementations: ");
