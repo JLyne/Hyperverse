@@ -36,9 +36,6 @@ public final class FileConfigurationObject {
     @Comment(value = "Whether or not player locations should be saved to the database,"
                     + " and be used when a player teleports between worlds")
     private boolean persistLocations = true;
-    @Setting(value = "keep-loaded")
-    @Comment(value = "Whether or not world spawn chunks should be kept in memory")
-    private boolean keepSpawnLoaded = true;
     @Setting(value = "language-code")
     @Comment(value = "Language code used to resolve translations. Currently supported: en, sv, de, cn")
     private String languageCode = "en";
@@ -55,10 +52,6 @@ public final class FileConfigurationObject {
 
     boolean isPersistLocations() {
         return this.persistLocations;
-    }
-
-    boolean isKeepSpawnLoaded() {
-        return this.keepSpawnLoaded;
     }
 
     @NonNull String getLanguageCode() {

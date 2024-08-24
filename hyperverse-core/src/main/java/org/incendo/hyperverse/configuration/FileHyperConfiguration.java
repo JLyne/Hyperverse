@@ -98,11 +98,6 @@ public final class FileHyperConfiguration implements HyperConfiguration {
     }
 
     @Override
-    public boolean shouldKeepSpawnLoaded() {
-        return this.fileConfigurationObject.isKeepSpawnLoaded();
-    }
-
-    @Override
     public @NonNull String getLanguageCode() {
         return this.fileConfigurationObject.getLanguageCode();
     }

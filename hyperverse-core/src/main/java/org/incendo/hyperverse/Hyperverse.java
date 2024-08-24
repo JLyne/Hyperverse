@@ -234,8 +234,6 @@ public final class Hyperverse extends JavaPlugin implements HyperverseAPI, Liste
             this.getLogger().info("Hyperverse Options");
             this.getLogger().info("- use persistent locations? " + this.hyperConfiguration
                     .shouldPersistLocations());
-            this.getLogger().info(
-                    "- keep spawns loaded? " + this.hyperConfiguration.shouldKeepSpawnLoaded());
             this.getLogger().info("- should detect worlds? " + this.hyperConfiguration
                     .shouldImportAutomatically());
         } catch (final Exception e) {

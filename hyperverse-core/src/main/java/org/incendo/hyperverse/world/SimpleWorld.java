@@ -42,7 +42,6 @@ import org.incendo.hyperverse.flags.implementation.AliasFlag;
 import org.incendo.hyperverse.flags.implementation.DifficultyFlag;
 import org.incendo.hyperverse.flags.implementation.ForceSpawn;
 import org.incendo.hyperverse.flags.implementation.SaveWorldFlag;
-import org.incendo.hyperverse.flags.implementation.UnloadSpawnFlag;
 import org.incendo.hyperverse.modules.FlagContainerFactory;
 import org.incendo.hyperverse.modules.HyperEventFactory;
 import org.incendo.hyperverse.modules.HyperWorldCreatorFactory;
@@ -295,7 +294,7 @@ public final class SimpleWorld implements HyperWorld {
     }
 
     private void unloadChunks() {
-        if (this.bukkitWorld == null || this.shouldKeepSpawnLoaded()) {
+        if (this.bukkitWorld == null) {
             return;
         }
         try {
@@ -472,7 +471,6 @@ public final class SimpleWorld implements HyperWorld {
     public void refreshFlags() {
         if (this.bukkitWorld != null) {
             this.bukkitWorld.setDifficulty(this.getFlag(DifficultyFlag.class));
-            this.bukkitWorld.setKeepSpawnInMemory(this.shouldKeepSpawnLoaded());
             this.bukkitWorld.setAutoSave(this.getFlag(SaveWorldFlag.class));
         }
     }
@@ -495,13 +493,4 @@ public final class SimpleWorld implements HyperWorld {
         }
         return displayName;
     }
-
-    @Override
-    public boolean shouldKeepSpawnLoaded() {
-        if (this.getFlag(UnloadSpawnFlag.class)) {
-            return false;
-        }
-        return this.hyperConfiguration.shouldKeepSpawnLoaded();
-    }
-
 }
