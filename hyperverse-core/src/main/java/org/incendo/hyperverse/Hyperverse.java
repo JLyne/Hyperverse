@@ -73,7 +73,6 @@ import java.util.logging.Logger;
 
 /**
  * Plugin main class
- * {@inheritDoc}
  */
 @Singleton
 public final class Hyperverse extends JavaPlugin implements HyperverseAPI, Listener {

@@ -26,7 +26,6 @@ import java.util.Objects;
 /**
  * Events involving {@link org.bukkit.entity.Player} inside of a
  * {@link org.incendo.hyperverse.world.HyperWorld}
- * {@inheritDoc}
  */
 public abstract class HyperPlayerEvent extends HyperWorldEvent {
 

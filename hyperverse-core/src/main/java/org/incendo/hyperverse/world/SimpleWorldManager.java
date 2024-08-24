@@ -54,7 +54,6 @@ import java.util.stream.Stream;
 
 /**
  * Implementation of {@link WorldManager}
- * {@inheritDoc}
  */
 @Singleton
 public final class SimpleWorldManager implements WorldManager, Listener {

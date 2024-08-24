@@ -32,9 +32,6 @@ import org.spongepowered.configurate.serialize.SerializationException;
 import java.io.File;
 import java.io.IOException;
 
-/**
- * {@inheritDoc}
- */
 @Singleton
 public final class FileHyperConfiguration implements HyperConfiguration {
 

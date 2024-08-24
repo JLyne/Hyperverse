@@ -63,7 +63,6 @@ import java.util.function.Consumer;
 
 /**
  * Implementation of {@link HyperWorld}
- * {@inheritDoc}
  */
 public final class SimpleWorld implements HyperWorld {
 

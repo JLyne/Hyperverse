@@ -23,7 +23,6 @@ import org.incendo.hyperverse.world.HyperWorld;
 
 /**
  * Called when a {@link org.incendo.hyperverse.world.HyperWorld} has been deleted
- * {@inheritDoc}
  */
 public final class HyperWorldDeleteEvent extends HyperWorldEvent {
 

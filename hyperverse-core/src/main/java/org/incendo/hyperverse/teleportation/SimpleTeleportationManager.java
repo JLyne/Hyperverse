@@ -45,9 +45,6 @@ import org.incendo.hyperverse.world.WorldType;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 
-/**
- * {@inheritDoc}
- */
 public final class SimpleTeleportationManager implements TeleportationManager {
 
     private final Hyperverse hyperverse;

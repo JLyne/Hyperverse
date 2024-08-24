@@ -25,7 +25,6 @@ import org.incendo.hyperverse.world.WorldConfiguration;
 /**
  * Exception thrown during the creation of a {@link HyperWorld},
  * if it for some reason cannot be created
- * {@inheritDoc}
  */
 public final class HyperWorldCreationException extends Exception {
 

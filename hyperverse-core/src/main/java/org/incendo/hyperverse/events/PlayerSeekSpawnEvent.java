@@ -33,7 +33,6 @@ import java.util.Objects;
  * <p>
  * Cancelling this event means that Hyperverse ignores the event entirely,
  * and lets vanilla/other Bukkit plugins handle it
- * {@inheritDoc}
  */
 public final class PlayerSeekSpawnEvent extends HyperPlayerEvent implements Cancellable {
 

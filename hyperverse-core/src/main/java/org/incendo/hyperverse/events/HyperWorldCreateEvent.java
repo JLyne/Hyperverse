@@ -24,7 +24,6 @@ import org.incendo.hyperverse.world.HyperWorld;
 
 /**
  * Called when a new {@link org.incendo.hyperverse.world.HyperWorld} has been created
- * {@inheritDoc}
  */
 public final class HyperWorldCreateEvent extends HyperWorldEvent {
 
