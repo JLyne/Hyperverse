@@ -12,7 +12,7 @@ plugins {
 paperweight.reobfArtifactConfiguration = io.papermc.paperweight.userdev.ReobfArtifactConfiguration.MOJANG_PRODUCTION
 
 dependencies {
-    paperweight.paperDevBundle("1.21.3-R0.1-SNAPSHOT")
+    paperweight.paperDevBundle("1.21.4-R0.1-SNAPSHOT")
 
     compileOnly(libs.paper)
     compileOnly(libs.placeholderapi)
@@ -38,7 +38,7 @@ paper {
     authors = listOf("Citymonstret", "andrewandy")
     main = "org.incendo.hyperverse.Hyperverse"
     version = project.version.toString()
-    apiVersion = "1.21.3"
+    apiVersion = "1.21.4"
 
     serverDependencies {
         register("PlaceholderAPI") {
@@ -116,6 +116,6 @@ tasks {
 
     runServer {
         java.toolchain.languageVersion.set(JavaLanguageVersion.of(21))
-        minecraftVersion("1.21.3")
+        minecraftVersion("1.21.4")
     }
 }
