@@ -39,7 +39,6 @@ import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.HelpCommand;
 import co.aikar.commands.annotation.Optional;
 import co.aikar.commands.annotation.Subcommand;
-import co.aikar.taskchain.TaskChainFactory;
 import com.google.inject.Inject;
 import io.leangen.geantyref.TypeToken;
 import org.apache.commons.lang3.StringUtils;
@@ -115,7 +114,6 @@ public final class HyperCloudCommandManager extends BaseCommand {
     private final HyperWorldFactory hyperWorldFactory;
     private final WorldConfigurationFactory worldConfigurationFactory;
     private final GlobalWorldFlagContainer globalFlagContainer;
-    private final TaskChainFactory taskChainFactory;
 
     private final Hyperverse hyperverse;
     private final Server server;
@@ -127,7 +125,6 @@ public final class HyperCloudCommandManager extends BaseCommand {
             final HyperWorldFactory hyperWorldFactory,
             final WorldConfigurationFactory worldConfigurationFactory,
             final GlobalWorldFlagContainer globalFlagContainer,
-            final TaskChainFactory taskFactory,
             final FileHyperConfiguration hyperConfiguration,
             final Server server
     ) {
@@ -136,7 +133,6 @@ public final class HyperCloudCommandManager extends BaseCommand {
         this.hyperWorldFactory = Objects.requireNonNull(hyperWorldFactory);
         this.worldConfigurationFactory = Objects.requireNonNull(worldConfigurationFactory);
         this.globalFlagContainer = Objects.requireNonNull(globalFlagContainer);
-        this.taskChainFactory = Objects.requireNonNull(taskFactory);
         this.fileHyperConfiguration = Objects.requireNonNull(hyperConfiguration);
         this.server = server;
 

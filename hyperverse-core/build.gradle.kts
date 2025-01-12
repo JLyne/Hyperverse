@@ -19,7 +19,6 @@ dependencies {
 
     // TODO: Remove, because yuck.
     implementation("co.aikar:acf-paper:0.5.1-SNAPSHOT")
-    implementation(libs.taskchain)
     implementation(libs.guice) {
         exclude("com.google.guava", "guava")
     }
@@ -93,7 +92,6 @@ tasks {
 
         relocate("co.aikar.commands", "org.incendo.hyperverse.libs.aikar.commands")
         relocate("co.aikar.locales", "org.incendo.hyperverse.libs.aikar.locales")
-        relocate("co.aikar.taskchain", "org.incendo.hyperverse.libs.taskchain")
         relocate("co.aikar.util", "org.incendo.hyperverse.libs.aikar.util")
         relocate("net.jodah.expiringmap", "org.incendo.hyperverse.libs.expiringmap")
         relocate("cloud.commandframework", "org.incendo.hyperverse.libs.cloud")

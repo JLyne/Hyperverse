@@ -6,8 +6,6 @@ Lists of 29 third-party dependencies.
 - (MIT) [ACF (Core) (co.aikar:acf-core:0.5.0-20200418.224207-160)](https://acf.emc.gs/acf-core)
 - (MIT) [locales (co.aikar:locales:1.0-20181221.115311-17)]()
 - (MIT) [MinecraftTimings (co.aikar:minecraft-timings:1.0.4)]()
-- (MIT) [TaskChain (Bukkit) (co.aikar:taskchain-bukkit:3.7.2)](https://taskchain.emc.gs/taskchain-bukkit)
-- (MIT) [TaskChain (Core) (co.aikar:taskchain-core:3.7.2)](https://taskchain.emc.gs/taskchain-core)
 - (Apache 2.0) [Gson (com.google.code.gson:gson:2.8.0)](https://github.com/google/gson/gson)
 - (The Apache Software License, Version 2.0) [Guava: Google Core Libraries for Java (com.google.guava:guava:21.0)](https://github.com/google/guava/guava)
 - (The Apache Software License, Version 2.0) [Google Guice - Core Library (com.google.inject:guice:4.2.3)](https://github.com/google/guice/guice)

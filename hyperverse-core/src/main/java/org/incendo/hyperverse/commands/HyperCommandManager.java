@@ -31,7 +31,6 @@ import co.aikar.commands.annotation.HelpCommand;
 import co.aikar.commands.annotation.Optional;
 import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
-import co.aikar.taskchain.TaskChainFactory;
 import com.google.inject.Inject;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
@@ -99,7 +98,6 @@ public final class HyperCommandManager extends BaseCommand {
     private final HyperWorldFactory hyperWorldFactory;
     private final WorldConfigurationFactory worldConfigurationFactory;
     private final GlobalWorldFlagContainer globalFlagContainer;
-    private final TaskChainFactory taskChainFactory;
 
     @Inject
     @SuppressWarnings("deprecation")
@@ -109,14 +107,12 @@ public final class HyperCommandManager extends BaseCommand {
             final HyperWorldFactory hyperWorldFactory,
             final WorldConfigurationFactory worldConfigurationFactory,
             final GlobalWorldFlagContainer globalFlagContainer,
-            final TaskChainFactory taskFactory,
             final FileHyperConfiguration hyperConfiguration
     ) {
         this.worldManager = Objects.requireNonNull(worldManager);
         this.hyperWorldFactory = Objects.requireNonNull(hyperWorldFactory);
         this.worldConfigurationFactory = Objects.requireNonNull(worldConfigurationFactory);
         this.globalFlagContainer = Objects.requireNonNull(globalFlagContainer);
-        this.taskChainFactory = Objects.requireNonNull(taskFactory);
         this.fileHyperConfiguration = Objects.requireNonNull(hyperConfiguration);
 
         // Create the command manager

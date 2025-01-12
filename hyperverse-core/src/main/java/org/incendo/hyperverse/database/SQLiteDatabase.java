@@ -17,9 +17,9 @@
 
 package org.incendo.hyperverse.database;
 
-import co.aikar.taskchain.TaskChainFactory;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import org.bukkit.Bukkit;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.incendo.hyperverse.Hyperverse;
 
@@ -49,8 +49,8 @@ public final class SQLiteDatabase extends HyperDatabase {
     private Connection connection;
 
     @Inject
-    public SQLiteDatabase(final TaskChainFactory taskChainFactory, final Hyperverse hyperverse) {
-        super(taskChainFactory, hyperverse);
+    public SQLiteDatabase(final Hyperverse hyperverse) {
+        super(hyperverse);
     }
 
     @Override
@@ -107,7 +107,7 @@ public final class SQLiteDatabase extends HyperDatabase {
                     );
         }
 
-        this.getTaskChainFactory().newChain().async(() -> {
+        CompletableFuture.runAsync(() -> {
             try (final PreparedStatement statement = this.connection.prepareStatement(
                     "INSERT OR REPLACE INTO `locations` (`uuid`, `world`, `x`, `y`, `z`, `locationType`) VALUES(?, ?, ?, ?, ?, ?)")) {
                 statement.setString(1, persistentLocation.getUuid());
@@ -120,18 +120,18 @@ public final class SQLiteDatabase extends HyperDatabase {
             } catch (final SQLException e) {
                 e.printStackTrace();
             }
-        }).syncLast(in -> {
+        }).thenAcceptAsync(in -> {
             if (clear) {
                 this.clearLocations(UUID.fromString(persistentLocation.getUuid()));
             }
-        }).execute();
+        }, Bukkit.getScheduler().getMainThreadExecutor(getHyperverse()));
     }
 
     @Override
     public @NonNull CompletableFuture<Collection<PersistentLocation>> getLocations(final @NonNull UUID uuid) {
-        final CompletableFuture<Collection<PersistentLocation>> future = new CompletableFuture<>();
         final String uuidAsString = uuid.toString();
-        this.getTaskChainFactory().newChain().async(() -> {
+
+        return CompletableFuture.supplyAsync(() -> {
             try (final PreparedStatement statement = this.connection.prepareStatement(
                     "SELECT `world`, `x`, `y`, `z`, `locationType` FROM `locations` WHERE `uuid` = ?")) {
                 statement.setString(1, uuidAsString);
@@ -156,24 +156,23 @@ public final class SQLiteDatabase extends HyperDatabase {
                             locationList.size(), uuid
                     ));
                 }
-                future.complete(locationList);
-            } catch (final Exception e) {
-                future.completeExceptionally(e);
+                return locationList;
+            } catch (final SQLException e) {
+                throw new RuntimeException(e);
             }
-        }).execute();
-        return future;
+        });
     }
 
     @Override
     public void clearWorld(final @NonNull String worldName) {
-        this.getTaskChainFactory().newChain().async(() -> {
+        CompletableFuture.runAsync(() -> {
             try (final PreparedStatement statement = this.connection.prepareStatement("DELETE FROM `locations` WHERE `world` = ?")) {
                 statement.setString(1, worldName);
                 statement.executeUpdate();
             } catch (final SQLException e) {
                 e.printStackTrace();
             }
-        }).execute();
+        });
     }
 
     private void executeUpdate(final @NonNull String sql) {

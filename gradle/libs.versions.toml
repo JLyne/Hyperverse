@@ -14,7 +14,6 @@ minecraft = "1.21.4-R0.1-SNAPSHOT"
 # Libraries
 cloud = "1.8.4"
 guice = "5.1.0"
-taskchain = "3.7.2"
 configurate = "4.1.2"
 
 # Minecraft Plugins
@@ -33,7 +32,6 @@ cloudMinecraftExtras = { group = "cloud.commandframework", name = "cloud-minecra
 cloudAnnotations = { group = "cloud.commandframework", name = "cloud-annotations", version.ref = "cloud" }
 guice = { group = "com.google.inject", name = "guice", version.ref = "guice" }
 assistedInject = { group = "com.google.inject.extensions", name = "guice-assistedinject", version.ref = "guice" }
-taskchain = { group = "co.aikar", name = "taskchain-bukkit", version.ref = "taskchain" }
 configurateHocon = { group = "org.spongepowered", name = "configurate-hocon", version.ref = "configurate"}
 
 # Minecraft Plugins

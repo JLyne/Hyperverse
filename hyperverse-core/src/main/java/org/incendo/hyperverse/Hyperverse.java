@@ -47,7 +47,6 @@ import org.incendo.hyperverse.listeners.EventListener;
 import org.incendo.hyperverse.listeners.WorldListener;
 import org.incendo.hyperverse.modules.HyperWorldFactory;
 import org.incendo.hyperverse.modules.HyperverseModule;
-import org.incendo.hyperverse.modules.TaskFactoryModule;
 import org.incendo.hyperverse.service.internal.SafeTeleportService;
 import org.incendo.hyperverse.util.MessageUtil;
 import org.incendo.hyperverse.world.HyperWorld;
@@ -125,8 +124,7 @@ public final class Hyperverse extends JavaPlugin implements HyperverseAPI, Liste
         try {
             this.injector = Guice.createInjector(
                     Stage.PRODUCTION,
-                    new HyperverseModule(getLogger(), this.servicePipeline, Bukkit.getServer(), this),
-                    new TaskFactoryModule()
+                    new HyperverseModule(getLogger(), this.servicePipeline, Bukkit.getServer(), this)
             );
         } catch (final Exception e) {
             e.printStackTrace();

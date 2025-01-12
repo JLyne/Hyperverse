@@ -17,7 +17,6 @@
 
 package org.incendo.hyperverse.database;
 
-import co.aikar.taskchain.TaskChainFactory;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -37,15 +36,12 @@ import java.util.concurrent.CompletableFuture;
  */
 public abstract class HyperDatabase {
 
-    private final TaskChainFactory taskChainFactory;
     private final Hyperverse hyperverse;
     private final EnumMap<LocationType, Table<UUID, String, PersistentLocation>> locations;
 
     protected HyperDatabase(
-            final @NonNull TaskChainFactory taskChainFactory,
             final @NonNull Hyperverse hyperverse
     ) {
-        this.taskChainFactory = taskChainFactory;
         this.hyperverse = hyperverse;
         this.locations = new EnumMap<>(LocationType.class);
         for (final LocationType type : LocationType.values()) {
@@ -124,10 +120,6 @@ public abstract class HyperDatabase {
      * @param worldName World to remove
      */
     public abstract void clearWorld(final @NonNull String worldName);
-
-    protected final @NonNull TaskChainFactory getTaskChainFactory() {
-        return this.taskChainFactory;
-    }
 
     protected final @NonNull Hyperverse getHyperverse() {
         return this.hyperverse;
