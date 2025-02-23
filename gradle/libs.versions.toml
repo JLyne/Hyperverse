@@ -5,7 +5,7 @@ checkstyle = "10.12.5"
 kotlin = "1.9.20"
 paperweight = "2.0.0-beta.14"
 run-paper = "2.3.0"
-pluginyml = "0.6.0"
+pluginyml = "0.7.1"
 
 # Platforms
 minecraft = "1.21.4-R0.1-SNAPSHOT"
@@ -16,7 +16,7 @@ guice = "5.1.0"
 configurate = "4.1.2"
 
 # Minecraft Plugins
-placeholderapi = "2.11.5"
+placeholderapi = "2.11.6"
 
 [libraries]
 cloud-build-logic = { module = "org.incendo:cloud-build-logic", version.ref = "cloud-build-logic" }
@@ -42,4 +42,4 @@ cloud-buildLogic-spotless = { id = "org.incendo.cloud-build-logic.spotless", ver
 cloud-buildLogic-rootProject-publishing = { id = "org.incendo.cloud-build-logic.publishing.root-project", version.ref = "cloud-build-logic" }
 cloud-buildLogic-rootProject-spotless = { id = "org.incendo.cloud-build-logic.spotless.root-project", version.ref = "cloud-build-logic" }
 run-paper = { id = "xyz.jpenilla.run-paper", version.ref = "run-paper" }
-pluginyml = { id = "net.minecrell.plugin-yml.paper", version.ref = "pluginyml" }
+pluginyml = { id = "de.eldoria.plugin-yml.paper", version.ref = "pluginyml" }
