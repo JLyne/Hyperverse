@@ -183,7 +183,7 @@ public final class SimpleWorld implements HyperWorld {
             result.accept(WorldUnloadResult.SUCCESS);
             // Assuming everything went fine
             this.hyperEventFactory.callWorldDeletion(this);
-        }, Bukkit.getScheduler().getMainThreadExecutor(hyperverse));
+        }, Bukkit.getScheduler().getMainThreadExecutor(this.hyperverse));
     }
 
     @Override
