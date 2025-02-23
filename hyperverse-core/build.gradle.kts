@@ -3,7 +3,6 @@ import net.minecrell.pluginyml.bukkit.BukkitPluginDescription
 plugins {
     id("hyperverse.base-conventions")
     id("hyperverse.publishing-conventions")
-    alias(libs.plugins.shadow)
     alias(libs.plugins.run.paper)
     alias(libs.plugins.pluginyml)
     alias(libs.plugins.paperweight.userdev)
@@ -18,17 +17,16 @@ dependencies {
     compileOnly(libs.placeholderapi)
 
     // TODO: Remove, because yuck.
-    implementation("co.aikar:acf-paper:0.5.1-SNAPSHOT")
-    implementation(libs.guice) {
+    paperLibrary("co.aikar:acf-paper:0.5.1-SNAPSHOT")
+    paperLibrary(libs.guice) {
         exclude("com.google.guava", "guava")
     }
-    implementation(libs.assistedInject) {
+    paperLibrary(libs.assistedInject) {
         exclude("com.google.guava", "guava")
     }
-    implementation(libs.configurateHocon)
-    implementation(libs.cloudPaper)
-    implementation(libs.cloudMinecraftExtras)
-    implementation(libs.cloudMinecraftExtras)
+    paperLibrary(libs.configurateHocon)
+    paperLibrary(libs.cloudPaper)
+    paperLibrary(libs.cloudMinecraftExtras)
 }
 
 paper {
@@ -36,8 +34,9 @@ paper {
     website = "https://github.com/incendo/Hyperverse"
     authors = listOf("Citymonstret", "andrewandy")
     main = "org.incendo.hyperverse.Hyperverse"
-    version = project.version.toString()
-    apiVersion = "1.21.4"
+    loader = "org.incendo.hyperverse.HyperverseLoader"
+    generateLibrariesJson = true
+    apiVersion = libs.versions.minecraft.get().replace(Regex("\\-R\\d.\\d-SNAPSHOT"), "")
 
     serverDependencies {
         register("PlaceholderAPI") {
@@ -81,37 +80,6 @@ paper {
 }
 
 tasks {
-    shadowJar {
-        mergeServiceFiles()
-
-        dependencies {
-            exclude {
-                it.moduleGroup == "com.google.guava"
-            }
-        }
-
-        relocate("co.aikar.commands", "org.incendo.hyperverse.libs.aikar.commands")
-        relocate("co.aikar.locales", "org.incendo.hyperverse.libs.aikar.locales")
-        relocate("co.aikar.util", "org.incendo.hyperverse.libs.aikar.util")
-        relocate("net.jodah.expiringmap", "org.incendo.hyperverse.libs.expiringmap")
-        relocate("cloud.commandframework", "org.incendo.hyperverse.libs.cloud")
-        relocate("org.spongepowered.configurate", "org.incendo.hyperverse.libs.configurate")
-        relocate("io.leangen.geantyref", "org.incendo.hyperverse.libs.geantyref")
-        relocate("org.checkerframework", "org.incendo.hyperverse.libs.checkerframework")
-        relocate("com.typesafe.config", "org.incendo.hyperverse.libs.hocon")
-        relocate("com.google.inject", "org.incendo.hyperverse.libs.guice")
-        relocate("javax.inject", "org.incendo.hyperverse.libs.javax.inject")
-        relocate("org.aopalliance", "org.incendo.hyperverse.libs.aop")
-        relocate("javax.annotation", "org.incendo.hyperverse.libs.javax.annotation")
-        relocate("org.intellij.lang.annotations", "org.incendo.hyperverse.libs.intellij.annotations")
-        relocate("org.jetbrains.annotations", "org.incendo.hyperverse.libs.jetbrains.annotations")
-        relocate("com.google.errorprone", "org.incendo.hyperverse.libs.errorprone")
-    }
-
-    build {
-        dependsOn(shadowJar)
-    }
-
     runServer {
         java.toolchain.languageVersion.set(JavaLanguageVersion.of(21))
         minecraftVersion("1.21.4")
