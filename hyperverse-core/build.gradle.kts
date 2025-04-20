@@ -80,6 +80,6 @@ paper {
 tasks {
     runServer {
         java.toolchain.languageVersion.set(JavaLanguageVersion.of(21))
-        minecraftVersion("1.21.4")
+        minecraftVersion("1.21.5")
     }
 }

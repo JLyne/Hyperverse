@@ -3,12 +3,12 @@ cloud-build-logic = "0.0.15"
 ktlint = "0.50.0"
 checkstyle = "10.12.5"
 kotlin = "1.9.20"
-paperweight = "2.0.0-beta.14"
+paperweight = "2.0.0-beta.16"
 run-paper = "2.3.0"
 pluginyml = "0.7.1"
 
 # Platforms
-minecraft = "1.21.4-R0.1-SNAPSHOT"
+minecraft = "1.21.5-R0.1-SNAPSHOT"
 
 # Libraries
 cloud = "1.8.4"

@@ -32,6 +32,7 @@ import co.aikar.commands.annotation.Optional;
 import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
 import com.google.inject.Inject;
+import io.papermc.paper.plugin.configuration.PluginMeta;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -43,7 +44,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
-import org.bukkit.plugin.PluginDescriptionFile;
 import org.incendo.hyperverse.Hyperverse;
 import org.incendo.hyperverse.configuration.FileHyperConfiguration;
 import org.incendo.hyperverse.configuration.Message;
@@ -991,11 +991,12 @@ public final class HyperCommandManager extends BaseCommand {
         }
     }
 
+    @SuppressWarnings("UnstableApiUsage")
     @Subcommand("plugin")
     @Description("{@@command.plugin}")
     public void doPlugin(final CommandSender sender) {
         final Hyperverse plugin = Hyperverse.getPlugin(Hyperverse.class);
-        final PluginDescriptionFile description = plugin.getDescription();
+        final PluginMeta description = plugin.getPluginMeta();
         Stream.of(
                 "<gold>Plugin Version:</gold> <gray>" + description.getVersion() + "</gray>",
                 "<gold>Author(s):</gold> <gray>" + StringUtils.join(description.getAuthors(), ", ") + "</gray>",

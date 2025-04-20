@@ -17,10 +17,10 @@
 
 package org.incendo.hyperverse.features.external;
 
+import io.papermc.paper.plugin.configuration.PluginMeta;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -42,9 +42,10 @@ final class HyperverseExpansion extends PlaceholderExpansion {
     private final String author;
     private final String version;
 
+    @SuppressWarnings("UnstableApiUsage")
     public HyperverseExpansion() {
         this.plugin = JavaPlugin.getPlugin(Hyperverse.class);
-        final PluginDescriptionFile descriptionFile = this.plugin.getDescription();
+        final PluginMeta descriptionFile = this.plugin.getPluginMeta();
         this.author = descriptionFile.getAuthors().toString();
         this.version = descriptionFile.getVersion();
     }

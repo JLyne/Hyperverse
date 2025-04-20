@@ -39,8 +39,12 @@ public final class NMSUtil {
             return null;
         }
 
-        return ServerPlayer.findRespawnAndUseSpawnBlock(craftWorld.getHandle(), new BlockPos(spawnLocation.getBlockX(),
-                        spawnLocation.getBlockY(), spawnLocation.getBlockZ()), 0, true, false)
+        ServerPlayer.RespawnConfig respawnConfig = new ServerPlayer.RespawnConfig(
+                craftWorld.getHandle().dimension(),
+                new BlockPos(spawnLocation.getBlockX(), spawnLocation.getBlockY(), spawnLocation.getBlockZ()),
+                0, true);
+
+        return ServerPlayer.findRespawnAndUseSpawnBlock(craftWorld.getHandle(), respawnConfig, false)
                 .map(ServerPlayer.RespawnPosAngle::position)
                 .map(pos -> new Location(spawnLocation.getWorld(), pos.x(), pos.y(), pos.z()))
                 .orElse(null);
