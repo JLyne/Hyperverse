@@ -1,20 +1,3 @@
-//
-//  Hyperverse - A minecraft world management plugin
-//
-//  This program is free software: you can redistribute it and/or modify
-//  it under the terms of the GNU General Public License as published by
-//  the Free Software Foundation, either version 3 of the License, or
-//  (at your option) any later version.
-//
-//  This program is distributed in the hope that it will be useful,
-//  but WITHOUT ANY WARRANTY; without even the implied warranty of
-//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//  GNU General Public License for more details.
-//
-//  You should have received a copy of the GNU General Public License
-//  along with this program. If not, see <http://www.gnu.org/licenses/>.
-//
-
 package org.incendo.hyperverse;
 
 import com.google.gson.Gson;
@@ -34,11 +17,18 @@ import java.util.Map;
 import java.util.stream.Stream;
 
 @SuppressWarnings({"UnstableApiUsage", "unused"})
-public final class HyperverseLoader implements PluginLoader {
-    @Override
-    public void classloader(@NotNull final PluginClasspathBuilder classpathBuilder) {
+public class HyperverseLoader implements PluginLoader {
+    private static final List<String> MAVEN_CENTRAL_URLS = List.of(
+        "https://repo1.maven.org/maven2",
+        "http://repo1.maven.org/maven2",
+        "https://repo.maven.apache.org/maven2",
+        "http://repo.maven.apache.org/maven2"
+    );
+
+	@Override
+    public void classloader(@NotNull PluginClasspathBuilder classpathBuilder) {
         MavenLibraryResolver resolver = new MavenLibraryResolver();
-        PluginLibraries pluginLibraries = this.load();
+        PluginLibraries pluginLibraries = load();
         pluginLibraries.asDependencies().forEach(resolver::addDependency);
         pluginLibraries.asRepositories().forEach(resolver::addRepository);
         classpathBuilder.addLibrary(resolver);
@@ -54,13 +44,17 @@ public final class HyperverseLoader implements PluginLoader {
 
     private record PluginLibraries(Map<String, String> repositories, List<String> dependencies) {
         public Stream<Dependency> asDependencies() {
-            return this.dependencies.stream()
+            return dependencies.stream()
                     .map(d -> new Dependency(new DefaultArtifact(d), null));
         }
 
         public Stream<RemoteRepository> asRepositories() {
-            return this.repositories.entrySet().stream()
-                    .map(e -> new RemoteRepository.Builder(e.getKey(), "default", e.getValue()).build());
+            return repositories.entrySet().stream().map(e -> {
+                        String url = MAVEN_CENTRAL_URLS.stream().anyMatch(e.getValue()::startsWith) ?
+                            MavenLibraryResolver.MAVEN_CENTRAL_DEFAULT_MIRROR : e.getValue();
+
+                        return new RemoteRepository.Builder(e.getKey(), "default",url).build();
+                    });
         }
     }
 }
