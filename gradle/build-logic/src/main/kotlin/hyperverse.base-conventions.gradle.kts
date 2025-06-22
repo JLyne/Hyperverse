@@ -13,8 +13,6 @@ indra {
 }
 
 repositories {
-    mavenLocal()
-    mavenCentral()
     maven("https://oss.sonatype.org/content/repositories/snapshots/") {
         name = "sonatypeOssSnapshots"
         mavenContent {
@@ -28,4 +26,6 @@ repositories {
     maven("https://repo.spongepowered.org/maven")
     maven("https://repo.extendedclip.com/content/repositories/placeholderapi/")
     maven("https://ci.mg-dev.eu/plugin/repository/everything/")
+    mavenCentral()
+    mavenLocal()
 }
