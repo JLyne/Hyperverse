@@ -1,10 +1,7 @@
 [versions]
 cloud-build-logic = "0.0.15"
 ktlint = "0.50.0"
-checkstyle = "10.12.5"
-kotlin = "1.9.20"
 paperweight = "2.0.0-beta.17"
-run-paper = "2.3.0"
 pluginyml = "0.7.1"
 
 # Platforms
@@ -20,7 +17,6 @@ placeholderapi = "2.11.6"
 
 [libraries]
 cloud-build-logic = { module = "org.incendo:cloud-build-logic", version.ref = "cloud-build-logic" }
-gradleKotlinJvm = { group = "org.jetbrains.kotlin.jvm", name = "org.jetbrains.kotlin.jvm.gradle.plugin", version.ref = "kotlin" }
 
 # Platform
 paper = { group = "io.papermc.paper", name = "paper-api", version.ref = "minecraft" }
@@ -39,7 +35,5 @@ placeholderapi = { group = "me.clip", name = "placeholderapi", version.ref = "pl
 [plugins]
 paperweight-userdev = { id = "io.papermc.paperweight.userdev", version.ref = "paperweight" }
 cloud-buildLogic-spotless = { id = "org.incendo.cloud-build-logic.spotless", version.ref = "cloud-build-logic" }
-cloud-buildLogic-rootProject-publishing = { id = "org.incendo.cloud-build-logic.publishing.root-project", version.ref = "cloud-build-logic" }
 cloud-buildLogic-rootProject-spotless = { id = "org.incendo.cloud-build-logic.spotless.root-project", version.ref = "cloud-build-logic" }
-run-paper = { id = "xyz.jpenilla.run-paper", version.ref = "run-paper" }
 pluginyml = { id = "de.eldoria.plugin-yml.paper", version.ref = "pluginyml" }

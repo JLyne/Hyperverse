@@ -209,5 +209,5 @@ gradle-app.setting
 # End of https://www.toptal.com/developers/gitignore/api/java,macos,maven,gradle,intellij
 
 # Ignore the commands folder
-commands
+/commands
 **/run
