@@ -18,14 +18,7 @@ import java.util.stream.Stream;
 
 @SuppressWarnings({"UnstableApiUsage", "unused"})
 public class HyperverseLoader implements PluginLoader {
-    private static final List<String> MAVEN_CENTRAL_URLS = List.of(
-        "https://repo1.maven.org/maven2",
-        "http://repo1.maven.org/maven2",
-        "https://repo.maven.apache.org/maven2",
-        "http://repo.maven.apache.org/maven2"
-    );
-
-	@Override
+    @Override
     public void classloader(@NotNull PluginClasspathBuilder classpathBuilder) {
         MavenLibraryResolver resolver = new MavenLibraryResolver();
         PluginLibraries pluginLibraries = load();
@@ -49,12 +42,8 @@ public class HyperverseLoader implements PluginLoader {
         }
 
         public Stream<RemoteRepository> asRepositories() {
-            return repositories.entrySet().stream().map(e -> {
-                        String url = MAVEN_CENTRAL_URLS.stream().anyMatch(e.getValue()::startsWith) ?
-                            MavenLibraryResolver.MAVEN_CENTRAL_DEFAULT_MIRROR : e.getValue();
-
-                        return new RemoteRepository.Builder(e.getKey(), "default",url).build();
-                    });
+            return repositories.entrySet().stream()
+                    .map(e -> new RemoteRepository.Builder(e.getKey(), "default", e.getValue()).build());
         }
     }
 }
