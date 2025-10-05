@@ -20,7 +20,9 @@ package org.incendo.hyperverse.util;
 import java.lang.reflect.Field;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.GlobalPos;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.level.storage.LevelData;
 import org.bukkit.Location;
 import org.bukkit.craftbukkit.CraftWorld;
 import org.jetbrains.annotations.NotNull;
@@ -40,9 +42,12 @@ public final class NMSUtil {
         }
 
         ServerPlayer.RespawnConfig respawnConfig = new ServerPlayer.RespawnConfig(
-                craftWorld.getHandle().dimension(),
-                new BlockPos(spawnLocation.getBlockX(), spawnLocation.getBlockY(), spawnLocation.getBlockZ()),
-                0, true);
+                new LevelData.RespawnData(
+                        GlobalPos.of(craftWorld.getHandle().dimension(),
+                                new BlockPos(spawnLocation.getBlockX(), spawnLocation.getBlockY(), spawnLocation.getBlockZ())),
+                        0,
+                        0
+                ),true);
 
         return ServerPlayer.findRespawnAndUseSpawnBlock(craftWorld.getHandle(), respawnConfig, false)
                 .map(ServerPlayer.RespawnPosAngle::position)

@@ -5,7 +5,7 @@ paperweight = "2.0.0-beta.18"
 pluginyml = "0.7.1"
 
 # Platforms
-minecraft = "1.21.8-R0.1-SNAPSHOT"
+minecraft = "1.21.9-R0.1-SNAPSHOT"
 
 # Libraries
 cloud = "1.8.4"
