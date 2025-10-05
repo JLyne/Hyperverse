@@ -45,6 +45,12 @@ dependencies {
     paperLibrary(libs.cloudMinecraftExtras)
 }
 
+tasks {
+    generatePaperPluginDescription {
+        useDefaultCentralProxy()
+    }
+}
+
 paper {
     name = "Hyperverse"
     website = "https://github.com/incendo/Hyperverse"
