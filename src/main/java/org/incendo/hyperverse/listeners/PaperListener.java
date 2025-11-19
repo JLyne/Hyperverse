@@ -17,16 +17,11 @@
 
 package org.incendo.hyperverse.listeners;
 
-import com.destroystokyo.paper.event.entity.PlayerNaturallySpawnCreaturesEvent;
-import com.destroystokyo.paper.event.entity.PreCreatureSpawnEvent;
 import com.destroystokyo.paper.event.player.PlayerAdvancementCriterionGrantEvent;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.incendo.hyperverse.flags.implementation.AdvancementFlag;
-import org.incendo.hyperverse.flags.implementation.CreatureSpawnFlag;
-import org.incendo.hyperverse.flags.implementation.MobSpawnFlag;
 import org.incendo.hyperverse.world.HyperWorld;
 import org.incendo.hyperverse.world.WorldManager;
 
@@ -36,34 +31,6 @@ public final class PaperListener implements Listener {
 
     PaperListener(final @NonNull WorldManager worldManager) {
         this.worldManager = worldManager;
-    }
-
-    @EventHandler
-    public void onEntityPreSpawn(final @NonNull PreCreatureSpawnEvent event) {
-        final HyperWorld hyperWorld = this.worldManager.getWorld(event.getSpawnLocation().getWorld());
-        if (hyperWorld == null) {
-            return;
-        }
-        if (hyperWorld.getFlag(CreatureSpawnFlag.class)) {
-            return;
-        }
-        if (event.getReason() != CreatureSpawnEvent.SpawnReason.NATURAL) {
-            return;
-        }
-        event.setCancelled(true);
-        event.setShouldAbortSpawn(true);
-    }
-
-    @EventHandler
-    public void onMobPreSpawn(final @NonNull PlayerNaturallySpawnCreaturesEvent event) {
-        final HyperWorld hyperWorld = this.worldManager.getWorld(event.getPlayer().getWorld());
-        if (hyperWorld == null) {
-            return;
-        }
-        if (hyperWorld.getFlag(MobSpawnFlag.class)) {
-            return;
-        }
-        event.setCancelled(true);
     }
 
     @EventHandler

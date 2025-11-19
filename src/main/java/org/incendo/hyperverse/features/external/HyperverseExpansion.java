@@ -27,7 +27,6 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import org.incendo.hyperverse.Hyperverse;
 import org.incendo.hyperverse.flags.implementation.DifficultyFlag;
 import org.incendo.hyperverse.flags.implementation.PveFlag;
-import org.incendo.hyperverse.flags.implementation.PvpFlag;
 import org.incendo.hyperverse.world.HyperWorld;
 import org.incendo.hyperverse.world.WorldConfiguration;
 import org.incendo.hyperverse.world.WorldManager;
@@ -102,8 +101,6 @@ final class HyperverseExpansion extends PlaceholderExpansion {
                 return worldConfiguration.getGenerator();
             case "world_difficulty":
                 return hyperWorld.getFlag(DifficultyFlag.class).name();
-            case "world_pvp":
-                return hyperWorld.getFlag(PvpFlag.class).toString();
             case "world_pve":
                 return hyperWorld.getFlag(PveFlag.class).toString();
             default:

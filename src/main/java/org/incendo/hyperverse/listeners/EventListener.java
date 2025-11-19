@@ -21,26 +21,13 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.PortalType;
 import org.bukkit.boss.DragonBattle;
-import org.bukkit.entity.Ambient;
-import org.bukkit.entity.Animals;
-import org.bukkit.entity.Boss;
-import org.bukkit.entity.EnderCrystal;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Ghast;
-import org.bukkit.entity.IronGolem;
-import org.bukkit.entity.Monster;
-import org.bukkit.entity.NPC;
-import org.bukkit.entity.Phantom;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.Shulker;
-import org.bukkit.entity.Slime;
-import org.bukkit.entity.WaterMob;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityPortalEvent;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
@@ -50,7 +37,6 @@ import org.bukkit.event.player.PlayerPortalEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
-import org.bukkit.event.world.ChunkLoadEvent;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.scheduler.BukkitScheduler;
@@ -62,14 +48,11 @@ import org.incendo.hyperverse.database.LocationType;
 import org.incendo.hyperverse.database.PersistentLocation;
 import org.incendo.hyperverse.events.PlayerSeekSpawnEvent;
 import org.incendo.hyperverse.events.PlayerSetSpawnEvent;
-import org.incendo.hyperverse.flags.implementation.CreatureSpawnFlag;
 import org.incendo.hyperverse.flags.implementation.EndFlag;
 import org.incendo.hyperverse.flags.implementation.GamemodeFlag;
 import org.incendo.hyperverse.flags.implementation.LocalRespawnFlag;
-import org.incendo.hyperverse.flags.implementation.MobSpawnFlag;
 import org.incendo.hyperverse.flags.implementation.NetherFlag;
 import org.incendo.hyperverse.flags.implementation.PveFlag;
-import org.incendo.hyperverse.flags.implementation.PvpFlag;
 import org.incendo.hyperverse.flags.implementation.RespawnWorldFlag;
 import org.incendo.hyperverse.modules.HyperEventFactory;
 import org.incendo.hyperverse.util.MessageUtil;
@@ -109,29 +92,6 @@ public final class EventListener implements Listener {
         this.plugin = plugin;
 
         pluginManager.registerEvents(new PaperListener(this.worldManager), plugin);
-    }
-
-    /**
-     * Whether or not mob spawn should be cancelled
-     *
-     * @param world  World
-     * @param entity Entity
-     * @return {@code false} if the entity should be allowed to spawn, else {@code false}
-     */
-    public static boolean shouldCancelSpawn(
-            final @NonNull HyperWorld world,
-            final @NonNull Entity entity
-    ) {
-        if (!world.getFlag(CreatureSpawnFlag.class)) {
-            return entity instanceof IronGolem || entity instanceof Animals
-                    || entity instanceof WaterMob || entity instanceof Ambient || entity instanceof NPC;
-        }
-        if (!world.getFlag(MobSpawnFlag.class)) {
-            return entity instanceof Shulker || entity instanceof Monster || entity instanceof Boss
-                    || entity instanceof Slime || entity instanceof Ghast || entity instanceof Phantom
-                    || entity instanceof EnderCrystal;
-        }
-        return false;
     }
 
     @EventHandler
@@ -264,11 +224,7 @@ public final class EventListener implements Listener {
         final Entity first = event.getEntity();
         final Entity second = event.getDamager();
         if (first.getType() == EntityType.PLAYER || second.getType() == EntityType.PLAYER) {
-            if (first.getType() == second.getType()) {
-                if (!hyperWorld.getFlag(PvpFlag.class)) {
-                    event.setCancelled(true);
-                }
-            } else {
+            if (first.getType() != second.getType()) {
                 if (!hyperWorld.getFlag(PveFlag.class)) {
                     event.setCancelled(true);
                 }
@@ -369,37 +325,6 @@ public final class EventListener implements Listener {
             if (!flag.isEmpty()) {
                 event.setCancelled(true); // We do not want to allow default teleportation unless it has
                 // been configured
-            }
-        }
-    }
-
-    @EventHandler
-    public void onEntityPreSpawn(final @NonNull CreatureSpawnEvent event) {
-        final HyperWorld hyperWorld = this.worldManager.getWorld(event.getLocation().getWorld());
-        if (hyperWorld == null) {
-            return;
-        }
-        if (event.getSpawnReason() != CreatureSpawnEvent.SpawnReason.NATURAL) {
-            return;
-        }
-        final Entity entity = event.getEntity();
-        if (shouldCancelSpawn(hyperWorld, entity)) {
-            event.setCancelled(true);
-        }
-    }
-
-    @EventHandler
-    public void onChunkGeneration(final @NonNull ChunkLoadEvent event) {
-        if (!event.isNewChunk()) {
-            return;
-        }
-        final HyperWorld hyperWorld = this.worldManager.getWorld(event.getWorld());
-        if (hyperWorld == null) {
-            return;
-        }
-        for (final Entity entity : event.getChunk().getEntities()) {
-            if (shouldCancelSpawn(hyperWorld, entity)) {
-                entity.remove();
             }
         }
     }
