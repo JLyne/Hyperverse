@@ -235,8 +235,6 @@ public final class Messages {
             "world.not_safe",
             "<red>Teleportation to that location is not safe. An attempt to find a safe destination will be made."
     );
-    public static final @NonNull Message messageInvalidProfileGroup =
-            createMessage("invalid.profile_group", "<red>That is not a valid profile group");
     public static final @NonNull Message messageInvalidGameRule = createMessage(
             "invalid.game_rule",
             "<red>That is not a valid game rule"
@@ -336,10 +334,6 @@ public final class Messages {
     public static final @NonNull Message flagDescriptionEnd = createMessage(
             "flags.end",
             "Name of the dimension linked to this world's end portals"
-    );
-    public static final @NonNull Message flagDescriptionProfileGroup = createMessage(
-            "flags.profile-group",
-            "Name of the profile group that the world belongs to"
     );
     public static final @NonNull Message flagDescriptionDifficulty = createMessage(
             "flags.difficulty",

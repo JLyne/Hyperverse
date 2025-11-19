@@ -54,7 +54,6 @@ import org.incendo.hyperverse.flags.GlobalWorldFlagContainer;
 import org.incendo.hyperverse.flags.WorldFlag;
 import org.incendo.hyperverse.flags.implementation.EndFlag;
 import org.incendo.hyperverse.flags.implementation.NetherFlag;
-import org.incendo.hyperverse.flags.implementation.ProfileGroupFlag;
 import org.incendo.hyperverse.modules.HyperWorldFactory;
 import org.incendo.hyperverse.modules.WorldConfigurationFactory;
 import org.incendo.hyperverse.util.MessageUtil;
@@ -234,18 +233,6 @@ public final class HyperCommandManager extends BaseCommand {
                 }
             }
             return Collections.emptyList();
-        });
-        this.bukkitCommandManager.getCommandCompletions().registerCompletion("profile_groups", context -> {
-            Stream<String> groups = worldManager
-                    .getWorlds()
-                    .stream()
-                    .map(world -> world.getFlag(ProfileGroupFlag.class))
-                    .filter(s -> !s.isEmpty());
-            String requirePerms = context.getConfig("has_perms", "false");
-            if (requirePerms.equalsIgnoreCase("true")) {
-                groups = groups.filter(profile -> context.getSender().hasPermission("hyperverse.teleportgroup." + profile));
-            }
-            return groups.collect(Collectors.toList());
         });
         this.bukkitCommandManager.getCommandCompletions().registerAsyncCompletion("structures", context ->
                 Arrays.asList("yes", "true", "generate_structures", "structures", "no", "false", "no_structures"));

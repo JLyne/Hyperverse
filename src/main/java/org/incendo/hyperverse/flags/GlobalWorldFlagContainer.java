@@ -30,12 +30,10 @@ import org.incendo.hyperverse.flags.implementation.IgnoreBedsFlag;
 import org.incendo.hyperverse.flags.implementation.LocalRespawnFlag;
 import org.incendo.hyperverse.flags.implementation.MobSpawnFlag;
 import org.incendo.hyperverse.flags.implementation.NetherFlag;
-import org.incendo.hyperverse.flags.implementation.ProfileGroupFlag;
 import org.incendo.hyperverse.flags.implementation.PveFlag;
 import org.incendo.hyperverse.flags.implementation.PvpFlag;
 import org.incendo.hyperverse.flags.implementation.RespawnWorldFlag;
 import org.incendo.hyperverse.flags.implementation.SaveWorldFlag;
-import org.incendo.hyperverse.flags.implementation.UnloadSpawnFlag;
 import org.incendo.hyperverse.flags.implementation.WorldPermissionFlag;
 
 import java.util.HashMap;
@@ -61,7 +59,6 @@ public final class GlobalWorldFlagContainer extends WorldFlagContainer {
         this.addFlag(WorldPermissionFlag.WORLD_PERMISSION_FLAG_DEFAULT);
         this.addFlag(NetherFlag.NETHER_FLAG_DEFAULT);
         this.addFlag(EndFlag.END_FLAG_DEFAULT);
-        this.addFlag(ProfileGroupFlag.PROFILE_GROUP_FLAG_EMPTY);
         this.addFlag(DifficultyFlag.DIFFICULTY_FLAG_NORMAL);
         this.addFlag(MobSpawnFlag.MOB_SPAWN_ALLOWED);
         this.addFlag(CreatureSpawnFlag.CREATURE_SPAWN_ALLOWED);
@@ -69,7 +66,6 @@ public final class GlobalWorldFlagContainer extends WorldFlagContainer {
         this.addFlag(RespawnWorldFlag.RESPAWN_WORLD_FLAG_EMPTY);
         this.addFlag(IgnoreBedsFlag.IGNORE_BEDS_FALSE);
         this.addFlag(AliasFlag.ALIAS_NONE);
-        this.addFlag(UnloadSpawnFlag.UNLOAD_SPAWN_FALSE);
         this.addFlag(SaveWorldFlag.SAVE_WORLD_TRUE);
     }
 

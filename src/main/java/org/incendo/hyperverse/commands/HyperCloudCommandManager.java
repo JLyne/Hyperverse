@@ -69,7 +69,6 @@ import org.incendo.hyperverse.flags.GlobalWorldFlagContainer;
 import org.incendo.hyperverse.flags.WorldFlag;
 import org.incendo.hyperverse.flags.implementation.EndFlag;
 import org.incendo.hyperverse.flags.implementation.NetherFlag;
-import org.incendo.hyperverse.flags.implementation.ProfileGroupFlag;
 import org.incendo.hyperverse.modules.HyperWorldFactory;
 import org.incendo.hyperverse.modules.WorldConfigurationFactory;
 import org.incendo.hyperverse.util.MessageUtil;
@@ -257,22 +256,6 @@ public final class HyperCloudCommandManager extends BaseCommand {
                 .filter(p -> !players.contains(p.toLowerCase()))
                 .sorted(Comparator.naturalOrder())
                 .toList();
-    }
-
-    private List<String> suggestProfileGroups(
-            @NonNull final CommandContext<CommandSender> context,
-            @NonNull final String input
-    ) {
-        Stream<String> groups = this.worldManager
-                .getWorlds()
-                .stream()
-                .map(world -> world.getFlag(ProfileGroupFlag.class))
-                .filter(s -> !s.isEmpty());
-        final String requirePerms = context.getOrDefault("has_perms", "false");
-        if (requirePerms.equalsIgnoreCase("true")) {
-            groups = groups.filter(profile -> context.getSender().hasPermission("hyperverse.teleportgroup." + profile));
-        }
-        return groups.toList();
     }
 
     private List<String> suggestGameRule(@NonNull final CommandContext<CommandSender> context, @NonNull final String input) {
