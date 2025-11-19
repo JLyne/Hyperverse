@@ -13,7 +13,7 @@ guice = "5.1.0"
 configurate = "4.1.2"
 
 # Minecraft Plugins
-placeholderapi = "2.11.6"
+placeholderapi = "2.11.7"
 
 [libraries]
 cloud-build-logic = { module = "org.incendo:cloud-build-logic", version.ref = "cloud-build-logic" }
