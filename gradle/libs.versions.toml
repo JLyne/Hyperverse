@@ -1,5 +1,4 @@
 [versions]
-cloud-build-logic = "0.0.15"
 ktlint = "0.50.0"
 paperweight = "2.0.0-beta.19"
 pluginyml = "0.8.0"
@@ -16,15 +15,12 @@ configurate = "4.1.2"
 placeholderapi = "2.11.7"
 
 [libraries]
-cloud-build-logic = { module = "org.incendo:cloud-build-logic", version.ref = "cloud-build-logic" }
 
 # Platform
 paper = { group = "io.papermc.paper", name = "paper-api", version.ref = "minecraft" }
 
 # Libraries
 cloudPaper = { group = "cloud.commandframework", name = "cloud-paper", version.ref = "cloud" }
-cloudMinecraftExtras = { group = "cloud.commandframework", name = "cloud-minecraft-extras", version.ref = "cloud" }
-cloudAnnotations = { group = "cloud.commandframework", name = "cloud-annotations", version.ref = "cloud" }
 guice = { group = "com.google.inject", name = "guice", version.ref = "guice" }
 assistedInject = { group = "com.google.inject.extensions", name = "guice-assistedinject", version.ref = "guice" }
 configurateHocon = { group = "org.spongepowered", name = "configurate-hocon", version.ref = "configurate"}
@@ -34,6 +30,4 @@ placeholderapi = { group = "me.clip", name = "placeholderapi", version.ref = "pl
 
 [plugins]
 paperweight-userdev = { id = "io.papermc.paperweight.userdev", version.ref = "paperweight" }
-cloud-buildLogic-spotless = { id = "org.incendo.cloud-build-logic.spotless", version.ref = "cloud-build-logic" }
-cloud-buildLogic-rootProject-spotless = { id = "org.incendo.cloud-build-logic.spotless.root-project", version.ref = "cloud-build-logic" }
 pluginyml = { id = "de.eldoria.plugin-yml.paper", version.ref = "pluginyml" }

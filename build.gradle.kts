@@ -1,7 +1,6 @@
 import net.minecrell.pluginyml.bukkit.BukkitPluginDescription
 
 plugins {
-    alias(libs.plugins.cloud.buildLogic.rootProject.spotless)
     alias(libs.plugins.pluginyml)
     alias(libs.plugins.paperweight.userdev)
 }
@@ -21,11 +20,6 @@ repositories {
     mavenLocal()
 }
 
-spotlessPredeclare {
-    kotlin { ktlint(libs.versions.ktlint.get()) }
-    kotlinGradle { ktlint(libs.versions.ktlint.get()) }
-}
-
 dependencies {
     paperweight.paperDevBundle(libs.versions.minecraft)
 
@@ -42,7 +36,6 @@ dependencies {
     }
     paperLibrary(libs.configurateHocon)
     paperLibrary(libs.cloudPaper)
-    paperLibrary(libs.cloudMinecraftExtras)
 }
 
 tasks {

@@ -17,7 +17,6 @@
 
 package org.incendo.hyperverse.modules;
 
-import cloud.commandframework.services.ServicePipeline;
 import com.google.inject.AbstractModule;
 import com.google.inject.Singleton;
 import com.google.inject.assistedinject.FactoryModuleBuilder;
@@ -53,23 +52,19 @@ public final class HyperverseModule extends AbstractModule {
 
     private final Logger logger;
     private final Hyperverse hyperverse;
-    private final ServicePipeline servicePipeline;
     private final Server server;
 
     public HyperverseModule(
             final @NonNull Logger logger,
-            final @NonNull ServicePipeline servicePipeline,
             final @NonNull Server server,
             final @NonNull Hyperverse hyperverse
     ) {
         this.logger = logger;
         this.hyperverse = hyperverse;
-        this.servicePipeline = servicePipeline;
         this.server = server;
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     protected void configure() {
         // Install the bukkit module
         install(new BukkitModule(this.server));
@@ -82,7 +77,6 @@ public final class HyperverseModule extends AbstractModule {
         bind(HyperConfiguration.class).to(FileHyperConfiguration.class).in(Singleton.class);
         bind(WorldManager.class).to(SimpleWorldManager.class).in(Singleton.class);
         bind(GlobalWorldFlagContainer.class).toInstance(new GlobalWorldFlagContainer());
-        bind(ServicePipeline.class).toInstance(this.servicePipeline);
         bind(HyperEventFactory.class).to(SimpleHyperEventFactory.class).in(Singleton.class);
         bind(WorldConfigurationFactory.class).to(SimpleWorldConfigurationFactory.class).in(Singleton.class);
         install(new FactoryModuleBuilder().implement(WorldCreator.class, HyperWorldCreator.class)

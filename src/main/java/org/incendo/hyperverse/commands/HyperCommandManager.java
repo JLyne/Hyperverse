@@ -978,7 +978,6 @@ public final class HyperCommandManager extends BaseCommand {
         }
     }
 
-    @SuppressWarnings("UnstableApiUsage")
     @Subcommand("plugin")
     @Description("{@@command.plugin}")
     public void doPlugin(final CommandSender sender) {
