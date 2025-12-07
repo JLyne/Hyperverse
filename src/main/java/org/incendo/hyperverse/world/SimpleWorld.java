@@ -19,10 +19,13 @@ package org.incendo.hyperverse.world;
 
 import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
+import io.papermc.paper.registry.RegistryAccess;
+import io.papermc.paper.registry.RegistryKey;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.GameRule;
 import org.bukkit.Location;
+import org.bukkit.Registry;
 import org.bukkit.Server;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
@@ -50,6 +53,7 @@ import org.incendo.hyperverse.modules.PersistentLocationTransformer;
 import org.incendo.hyperverse.modules.TeleportationManagerFactory;
 import org.incendo.hyperverse.teleportation.TeleportationManager;
 import org.incendo.hyperverse.util.MessageUtil;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -279,14 +283,15 @@ public final class SimpleWorld implements HyperWorld {
         if (this.isLoaded()) {
             final StringBuilder gameRuleStringBuilder = new StringBuilder();
 
-            final GameRule<?>[] gameRules = GameRule.values();
-            for (final GameRule<?> gameRule : gameRules) {
+            Registry<@NotNull GameRule<?>> gameRuleRegistry = RegistryAccess.registryAccess().getRegistry(RegistryKey.GAME_RULE);
+
+            for (final GameRule<?> gameRule : gameRuleRegistry) {
                 final Object value = this.bukkitWorld.getGameRuleValue(gameRule);
                 if (value == this.bukkitWorld.getGameRuleDefault(gameRule)) {
                     continue;
                 }
-                gameRuleStringBuilder.append(gameRule.getName()).append("=")
-                        .append(value.toString()).append(" ");
+                gameRuleStringBuilder.append(gameRule.getKey()).append("=")
+                        .append(value != null ? value.toString() : "null").append(" ");
             }
 
             MessageUtil.sendMessage(sender, Messages.messageWorldProperty, "%property%", "game rules",

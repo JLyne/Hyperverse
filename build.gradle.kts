@@ -51,7 +51,7 @@ paper {
     main = "org.incendo.hyperverse.Hyperverse"
     loader = "org.incendo.hyperverse.HyperverseLoader"
     generateLibrariesJson = true
-    apiVersion = libs.versions.minecraft.get().replace(Regex("\\-R\\d.\\d-SNAPSHOT"), "")
+    apiVersion = libs.versions.minecraft.get().replace(Regex("(\\-(rc|pre)\\d+)?\\-R\\d.\\d-SNAPSHOT"), "")
 
     serverDependencies {
         register("PlaceholderAPI") {

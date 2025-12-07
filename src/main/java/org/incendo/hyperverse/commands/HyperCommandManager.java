@@ -33,11 +33,15 @@ import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
 import com.google.inject.Inject;
 import io.papermc.paper.plugin.configuration.PluginMeta;
+import io.papermc.paper.registry.RegistryAccess;
+import io.papermc.paper.registry.RegistryKey;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameRule;
 import org.bukkit.Location;
+import org.bukkit.NamespacedKey;
+import org.bukkit.Registry;
 import org.bukkit.World;
 import org.bukkit.command.CommandException;
 import org.bukkit.command.CommandSender;
@@ -66,6 +70,7 @@ import org.incendo.hyperverse.world.WorldFeatures;
 import org.incendo.hyperverse.world.WorldManager;
 import org.incendo.hyperverse.world.WorldStructureSetting;
 import org.incendo.hyperverse.world.WorldType;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
@@ -122,40 +127,40 @@ public final class HyperCommandManager extends BaseCommand {
         this.bukkitCommandManager.getCommandCompletions().registerAsyncCompletion(
                 "hyperworlds",
                 context -> worldManager.getWorlds().stream().filter(hyperWorld -> {
-                    final String stateSel = context.getConfig("state", "").toLowerCase();
-                    final String playerSel = context.getConfig("players", "").toLowerCase();
+                            final String stateSel = context.getConfig("state", "").toLowerCase();
+                            final String playerSel = context.getConfig("players", "").toLowerCase();
 
-                    // Don't check if the world is loaded, so it lists unloaded worlds when completing /hv load
+                            // Don't check if the world is loaded, so it lists unloaded worlds when completing /hv load
                 /*if (!hyperWorld.isLoaded()) {
                     return false;
                 }
                 assert hyperWorld.getBukkitWorld() != null;*/
-                    boolean ret = true;
-                    switch (stateSel) {
-                        case "loaded":
-                            ret = hyperWorld.isLoaded();
-                            break;
-                        case "not_loaded":
-                            ret = !hyperWorld.isLoaded();
-                            break;
-                        default:
-                            break;
-                    }
+                            boolean ret = true;
+                            switch (stateSel) {
+                                case "loaded":
+                                    ret = hyperWorld.isLoaded();
+                                    break;
+                                case "not_loaded":
+                                    ret = !hyperWorld.isLoaded();
+                                    break;
+                                default:
+                                    break;
+                            }
 
-                    // In here do check if the world is loaded.
-                    switch (playerSel) {
-                        case "no_players":
-                            ret = ret && hyperWorld.isLoaded() && hyperWorld.getBukkitWorld().getPlayers().isEmpty();
-                            break;
-                        case "has_players":
-                            ret = ret && hyperWorld.isLoaded() && !hyperWorld.getBukkitWorld().getPlayers().isEmpty();
-                            break;
-                        default:
-                            break;
-                    }
-                    return ret;
+                            // In here do check if the world is loaded.
+                            switch (playerSel) {
+                                case "no_players":
+                                    ret = ret && hyperWorld.isLoaded() && hyperWorld.getBukkitWorld().getPlayers().isEmpty();
+                                    break;
+                                case "has_players":
+                                    ret = ret && hyperWorld.isLoaded() && !hyperWorld.getBukkitWorld().getPlayers().isEmpty();
+                                    break;
+                                default:
+                                    break;
+                            }
+                            return ret;
 
-                }).map(HyperWorld::getConfiguration).map(WorldConfiguration::getName)
+                        }).map(HyperWorld::getConfiguration).map(WorldConfiguration::getName)
                         .filter(worldName -> {
                             final String selection = context.getConfig("player", "").toLowerCase();
                             final boolean inWorld = context.getIssuer().isPlayer()
@@ -171,88 +176,143 @@ public final class HyperCommandManager extends BaseCommand {
                         }).collect(Collectors.toList())
         );
         this.bukkitCommandManager.getCommandCompletions()
-                .registerAsyncCompletion("import-candidates", context -> {
-                    final File baseDirectory = Bukkit.getWorldContainer();
-                    try (final Stream<Path> files = Files.list(baseDirectory.toPath())){
-                        return files.filter(path -> {
-                            final File file = path.toFile();
-                            return file.isDirectory() && new File(file, "level.dat").isFile()
-                                    && this.worldManager.getWorld(file.getName()) == null;
-                        }).map(path -> path.toFile().getName()).sorted(Comparator.naturalOrder())
-                                .collect(Collectors.toList());
-                    } catch (IOException ex) {
+                .registerAsyncCompletion(
+                        "import-candidates", context -> {
+                            final File baseDirectory = Bukkit.getWorldContainer();
+                            try (final Stream<Path> files = Files.list(baseDirectory.toPath())) {
+                                return files.filter(path -> {
+                                            final File file = path.toFile();
+                                            return file.isDirectory() && new File(file, "level.dat").isFile()
+                                                    && this.worldManager.getWorld(file.getName()) == null;
+                                        }).map(path -> path.toFile().getName()).sorted(Comparator.naturalOrder())
+                                        .collect(Collectors.toList());
+                            } catch (IOException ex) {
+                                return Collections.emptyList();
+                            }
+                        }
+                );
+        this.bukkitCommandManager.getCommandCompletions().registerAsyncCompletion(
+                "worldtypes", context -> {
+                    if (context.getInput().contains(" ")) {
                         return Collections.emptyList();
                     }
-                });
-        this.bukkitCommandManager.getCommandCompletions().registerAsyncCompletion("worldtypes", context -> {
-            if (context.getInput().contains(" ")) {
-                return Collections.emptyList();
-            }
-            return Arrays.stream(WorldType.values()).map(WorldType::name).map(String::toLowerCase)
-                    .collect(Collectors.toList());
-        });
-        this.bukkitCommandManager.getCommandCompletions().registerAsyncCompletion("worldfeatures", context -> {
-            if (context.getInput().contains(" ")) {
-                return Collections.emptyList();
-            }
-            return Arrays.stream(WorldFeatures.values()).map(WorldFeatures::name).map(String::toLowerCase)
-                    .collect(Collectors.toList());
-        });
-        this.bukkitCommandManager.getCommandCompletions().registerCompletion("null", context ->
-                Collections.emptyList());
-        this.bukkitCommandManager.getCommandCompletions()
-                .registerAsyncCompletion("generators", context -> {
-                    final String arg = context.getInput();
-                    if (arg.contains(":")) {
-                        return Collections.emptyList();
-                    }
-                    final List<String> generators = new ArrayList<>();
-                    generators.add("vanilla");
-                    for (final Plugin plugin : Bukkit.getPluginManager().getPlugins()) {
-                        generators.add(plugin.getName().toLowerCase());
-                    }
-                    return generators;
-                });
-        this.bukkitCommandManager.getCommandCompletions().registerAsyncCompletion("flags", context ->
-                globalFlagContainer.getFlagMap().values().stream().map(WorldFlag::getName).collect(
-                        Collectors.toList()));
-        this.bukkitCommandManager.getCommandCompletions().registerAsyncCompletion("gamerules", context ->
-                Arrays.stream(GameRule.values()).map(GameRule::getName).collect(Collectors.toList()));
-        this.bukkitCommandManager.getCommandCompletions().registerCompletion("flag", context -> {
-            final WorldFlag<?, ?> flag = context.getContextValue(WorldFlag.class);
-            if (flag != null) {
-                return flag.getTabCompletions();
-            }
-            return Collections.emptyList();
-        });
-        this.bukkitCommandManager.getCommandCompletions().registerAsyncCompletion("gamerule", context -> {
-            final GameRule<?> gameRule = context.getContextValue(GameRule.class);
-            if (gameRule != null) {
-                if (gameRule.getType() == Boolean.class) {
-                    return Arrays.asList("true", "false");
+                    return Arrays.stream(WorldType.values()).map(WorldType::name).map(String::toLowerCase)
+                            .collect(Collectors.toList());
                 }
-            }
-            return Collections.emptyList();
-        });
-        this.bukkitCommandManager.getCommandCompletions().registerAsyncCompletion("structures", context ->
-                Arrays.asList("yes", "true", "generate_structures", "structures", "no", "false", "no_structures"));
-        this.bukkitCommandManager.getCommandContexts().registerContext(WorldStructureSetting.class, context -> {
-            switch (context.popFirstArg().toLowerCase()) {
-                case "yes":
-                case "true":
-                case "generate_structures":
-                case "structures":
-                    return WorldStructureSetting.GENERATE_STRUCTURES;
-                case "no":
-                case "false":
-                case "no_structures":
-                    return WorldStructureSetting.NO_STRUCTURES;
-                default:
-                    throw new InvalidCommandArgument(Messages.messageInvalidStructureSetting.withoutColorCodes());
-            }
-        });
+        );
+        this.bukkitCommandManager.getCommandCompletions().registerAsyncCompletion(
+                "worldfeatures", context -> {
+                    if (context.getInput().contains(" ")) {
+                        return Collections.emptyList();
+                    }
+                    return Arrays.stream(WorldFeatures.values()).map(WorldFeatures::name).map(String::toLowerCase)
+                            .collect(Collectors.toList());
+                }
+        );
+        this.bukkitCommandManager.getCommandCompletions().registerCompletion(
+                "null", context ->
+                        Collections.emptyList()
+        );
         this.bukkitCommandManager.getCommandCompletions()
-                .registerCompletion("vararg_players", context -> {
+                .registerAsyncCompletion(
+                        "generators", context -> {
+                            final String arg = context.getInput();
+                            if (arg.contains(":")) {
+                                return Collections.emptyList();
+                            }
+                            final List<String> generators = new ArrayList<>();
+                            generators.add("vanilla");
+                            for (final Plugin plugin : Bukkit.getPluginManager().getPlugins()) {
+                                generators.add(plugin.getName().toLowerCase());
+                            }
+                            return generators;
+                        }
+                );
+        this.bukkitCommandManager.getCommandCompletions().registerAsyncCompletion(
+                "flags", context ->
+                        globalFlagContainer.getFlagMap().values().stream().map(WorldFlag::getName).collect(
+                                Collectors.toList())
+        );
+
+        Registry<@NotNull GameRule<?>> gameruleRegistry = RegistryAccess.registryAccess().getRegistry(RegistryKey.GAME_RULE);
+
+        this.bukkitCommandManager.getCommandCompletions().registerAsyncCompletion(
+                "gamerules", context ->
+                        gameruleRegistry.stream().map(GameRule::getKey).map(NamespacedKey::asString).collect(Collectors.toList())
+        );
+        this.bukkitCommandManager.getCommandCompletions().registerCompletion(
+                "flag", context -> {
+                    final WorldFlag<?, ?> flag = context.getContextValue(WorldFlag.class);
+                    if (flag != null) {
+                        return flag.getTabCompletions();
+                    }
+                    return Collections.emptyList();
+                }
+        );
+        this.bukkitCommandManager.getCommandCompletions().registerAsyncCompletion(
+                "gamerule", context -> {
+                    final GameRule<?> gameRule = context.getContextValue(GameRule.class);
+                    if (gameRule != null) {
+                        if (gameRule.getType() == Boolean.class) {
+                            return Arrays.asList("true", "false");
+                        }
+                    }
+                    return Collections.emptyList();
+                }
+        );
+        this.bukkitCommandManager.getCommandCompletions().registerAsyncCompletion(
+                "structures", context ->
+                        Arrays.asList("yes", "true", "generate_structures", "structures", "no", "false", "no_structures")
+        );
+        this.bukkitCommandManager.getCommandContexts().registerContext(
+                WorldStructureSetting.class, context -> {
+                    switch (context.popFirstArg().toLowerCase()) {
+                        case "yes":
+                        case "true":
+                        case "generate_structures":
+                        case "structures":
+                            return WorldStructureSetting.GENERATE_STRUCTURES;
+                        case "no":
+                        case "false":
+                        case "no_structures":
+                            return WorldStructureSetting.NO_STRUCTURES;
+                        default:
+                            throw new InvalidCommandArgument(Messages.messageInvalidStructureSetting.withoutColorCodes());
+                    }
+                }
+        );
+        this.bukkitCommandManager.getCommandCompletions()
+                .registerCompletion(
+                        "vararg_players", context -> {
+                            String[] input = context.getInput().split(" ");
+                            final int toPop;
+                            try {
+                                toPop = Integer.parseInt(context.getConfig("pop"));
+                            } catch (final NumberFormatException ex) {
+                                ex.printStackTrace();
+                                return Collections.emptyList();
+                            }
+                            if (toPop > input.length) {
+                                throw new IllegalArgumentException(
+                                        "Config to pop is greater than input length!");
+                            }
+                            input = Arrays.copyOfRange(input, toPop, input.length - 1);
+                            for (int index = 0; index < input.length; index++) {
+                                input[index] = input[index].toLowerCase();
+                            }
+                            final List<String> players = new ArrayList<>(Arrays.asList(input));
+                            if (context.getPlayer() != null && !context.getConfig("self", "false")
+                                    .equalsIgnoreCase("true")) {
+                                players.remove(context.getPlayer().getName());
+                            }
+                            return Bukkit.getOnlinePlayers().stream().map(Player::getName)
+                                    .filter(player -> !players.contains(player.toLowerCase()))
+                                    .sorted(Comparator.naturalOrder()).collect(Collectors.toList());
+
+                        }
+                );
+        this.bukkitCommandManager.getCommandCompletions().registerCompletion(
+                "vararg_player_world", context -> {
                     String[] input = context.getInput().split(" ");
                     final int toPop;
                     try {
@@ -265,6 +325,8 @@ public final class HyperCommandManager extends BaseCommand {
                         throw new IllegalArgumentException(
                                 "Config to pop is greater than input length!");
                     }
+                    final String inWorld = context.getConfig("in_world", "false");
+                    final boolean checkInWorld = !inWorld.equalsIgnoreCase("false");
                     input = Arrays.copyOfRange(input, toPop, input.length - 1);
                     for (int index = 0; index < input.length; index++) {
                         input[index] = input[index].toLowerCase();
@@ -274,47 +336,19 @@ public final class HyperCommandManager extends BaseCommand {
                             .equalsIgnoreCase("true")) {
                         players.remove(context.getPlayer().getName());
                     }
-                    return Bukkit.getOnlinePlayers().stream().map(Player::getName)
+                    Stream<? extends Player> stream = Bukkit.getOnlinePlayers().stream();
+                    if (checkInWorld) {
+                        final HyperWorld world = context.getContextValue(HyperWorld.class);
+                        if (world == null) {
+                            return Collections.emptyList();
+                        }
+                        stream = stream.filter(player -> player.getWorld() != world.getBukkitWorld());
+                    }
+                    return stream.map(Player::getName)
                             .filter(player -> !players.contains(player.toLowerCase()))
                             .sorted(Comparator.naturalOrder()).collect(Collectors.toList());
-
-                });
-        this.bukkitCommandManager.getCommandCompletions().registerCompletion("vararg_player_world", context -> {
-            String[] input = context.getInput().split(" ");
-            final int toPop;
-            try {
-                toPop = Integer.parseInt(context.getConfig("pop"));
-            } catch (final NumberFormatException ex) {
-                ex.printStackTrace();
-                return Collections.emptyList();
-            }
-            if (toPop > input.length) {
-                throw new IllegalArgumentException(
-                        "Config to pop is greater than input length!");
-            }
-            final String inWorld = context.getConfig("in_world", "false");
-            final boolean checkInWorld = !inWorld.equalsIgnoreCase("false");
-            input = Arrays.copyOfRange(input, toPop, input.length - 1);
-            for (int index = 0; index < input.length; index++) {
-                input[index] = input[index].toLowerCase();
-            }
-            final List<String> players = new ArrayList<>(Arrays.asList(input));
-            if (context.getPlayer() != null && !context.getConfig("self", "false")
-                    .equalsIgnoreCase("true")) {
-                players.remove(context.getPlayer().getName());
-            }
-            Stream<? extends Player> stream = Bukkit.getOnlinePlayers().stream();
-            if (checkInWorld) {
-                final HyperWorld world = context.getContextValue(HyperWorld.class);
-                if (world == null) {
-                    return Collections.emptyList();
                 }
-                stream = stream.filter(player -> player.getWorld() != world.getBukkitWorld());
-            }
-            return stream.map(Player::getName)
-                    .filter(player -> !players.contains(player.toLowerCase()))
-                    .sorted(Comparator.naturalOrder()).collect(Collectors.toList());
-        });
+        );
         /*bukkitCommandManager.getCommandContexts().registerContext(Player[].class, context -> {
             final List<String> args = context.getArgs();
             final Player[] arr = new Player[args.size()];
@@ -328,33 +362,48 @@ public final class HyperCommandManager extends BaseCommand {
             args.clear();
             return arr;
         });*/
-        this.bukkitCommandManager.getCommandContexts().registerContext(WorldType.class, context -> {
-            final String arg = context.popFirstArg();
-            return WorldType.fromString(arg).orElseThrow(() ->
-                    new InvalidCommandArgument(Messages.messageInvalidWorldType.withoutColorCodes()));
-        });
-        this.bukkitCommandManager.getCommandContexts().registerContext(WorldFeatures.class, context -> {
-            final String arg = context.popFirstArg();
-            return WorldFeatures.fromName(arg).orElseThrow(() ->
-                    new InvalidCommandArgument(Messages.messageInvalidWorldFeatures.withoutColorCodes()));
-        });
-        this.bukkitCommandManager.getCommandContexts().registerIssuerAwareContext(HyperWorld.class, context -> {
-            HyperWorld hyperWorld = worldManager.getWorld(context.getFirstArg());
-            if (hyperWorld == null) {
-                if (context.getPlayer() != null) {
-                    hyperWorld = worldManager.getWorld(context.getPlayer().getWorld());
+        this.bukkitCommandManager.getCommandContexts().registerContext(
+                WorldType.class, context -> {
+                    final String arg = context.popFirstArg();
+                    return WorldType.fromString(arg).orElseThrow(() ->
+                            new InvalidCommandArgument(Messages.messageInvalidWorldType.withoutColorCodes()));
                 }
-                if (hyperWorld == null) {
-                    throw new InvalidCommandArgument(Messages.messageNoSuchWorld.withoutColorCodes());
+        );
+        this.bukkitCommandManager.getCommandContexts().registerContext(
+                WorldFeatures.class, context -> {
+                    final String arg = context.popFirstArg();
+                    return WorldFeatures.fromName(arg).orElseThrow(() ->
+                            new InvalidCommandArgument(Messages.messageInvalidWorldFeatures.withoutColorCodes()));
                 }
-            } else {
-                context.popFirstArg(); // remove the world argument as it's a valid world
-            }
-            return hyperWorld;
-        });
-        this.bukkitCommandManager.getCommandContexts().registerContext(GameRule.class, context ->
-                java.util.Optional.ofNullable(GameRule.getByName(context.popFirstArg()))
-                        .orElseThrow(() -> new InvalidCommandArgument(Messages.messageInvalidGameRule.withoutColorCodes())));
+        );
+        this.bukkitCommandManager.getCommandContexts().registerIssuerAwareContext(
+                HyperWorld.class, context -> {
+                    HyperWorld hyperWorld = worldManager.getWorld(context.getFirstArg());
+                    if (hyperWorld == null) {
+                        if (context.getPlayer() != null) {
+                            hyperWorld = worldManager.getWorld(context.getPlayer().getWorld());
+                        }
+                        if (hyperWorld == null) {
+                            throw new InvalidCommandArgument(Messages.messageNoSuchWorld.withoutColorCodes());
+                        }
+                    } else {
+                        context.popFirstArg(); // remove the world argument as it's a valid world
+                    }
+                    return hyperWorld;
+                }
+        );
+        this.bukkitCommandManager.getCommandContexts().registerContext(
+                GameRule.class, context -> {
+                    NamespacedKey key = NamespacedKey.fromString(context.popFirstArg());
+
+                    if (key == null) {
+                        throw new InvalidCommandArgument(Messages.messageInvalidGameRule.withoutColorCodes());
+                    }
+
+                    return java.util.Optional.ofNullable(gameruleRegistry.get(key))
+                            .orElseThrow(() -> new InvalidCommandArgument(Messages.messageInvalidGameRule.withoutColorCodes()));
+                });
+
         this.bukkitCommandManager.getCommandContexts().registerContext(WorldFlag.class, context -> {
             final WorldFlag<?, ?> flag = this.globalFlagContainer.getFlagFromString(context.popFirstArg().toLowerCase());
             if (flag == null) {
