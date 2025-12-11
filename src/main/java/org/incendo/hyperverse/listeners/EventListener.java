@@ -17,6 +17,8 @@
 
 package org.incendo.hyperverse.listeners;
 
+import io.papermc.paper.block.bed.BedEnterAction;
+import io.papermc.paper.block.bed.BedRuleResult;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.PortalType;
@@ -24,7 +26,6 @@ import org.bukkit.boss.DragonBattle;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -59,6 +60,7 @@ import org.incendo.hyperverse.util.MessageUtil;
 import org.incendo.hyperverse.world.HyperWorld;
 import org.incendo.hyperverse.world.WorldManager;
 import org.incendo.hyperverse.world.WorldType;
+import org.jetbrains.annotations.NotNull;
 
 import javax.inject.Inject;
 import java.util.Objects;
@@ -71,7 +73,6 @@ public final class EventListener implements Listener {
     private final HyperDatabase hyperDatabase;
     private final HyperConfiguration hyperConfiguration;
     private final Plugin plugin;
-    private final BukkitScheduler scheduler;
     private final HyperEventFactory hyperEventFactory;
 
     @Inject
@@ -88,7 +89,6 @@ public final class EventListener implements Listener {
         this.hyperDatabase = hyperDatabase;
         this.hyperEventFactory = hyperEventFactory;
         this.hyperConfiguration = hyperConfiguration;
-        this.scheduler = scheduler;
         this.plugin = plugin;
 
         pluginManager.registerEvents(new PaperListener(this.worldManager), plugin);
@@ -329,17 +329,16 @@ public final class EventListener implements Listener {
         }
     }
 
+    @SuppressWarnings("UnstableApiUsage")
     @EventHandler(priority = EventPriority.MONITOR)
     public void onSleep(final @NonNull PlayerBedEnterEvent event) {
         if (!this.hyperConfiguration.shouldPersistLocations()) {
             return;
         }
 
-        final PlayerBedEnterEvent.BedEnterResult bedEnterResult = event.getBedEnterResult();
-        if ((event.useBed() == Event.Result.DEFAULT && (bedEnterResult == PlayerBedEnterEvent.BedEnterResult.NOT_POSSIBLE_HERE
-                || bedEnterResult == PlayerBedEnterEvent.BedEnterResult.TOO_FAR_AWAY
-                || bedEnterResult == PlayerBedEnterEvent.BedEnterResult.OTHER_PROBLEM))
-                || event.useBed() == Event.Result.DENY) {
+        final @NotNull BedEnterAction bedEnterAction = event.enterAction();
+        if (bedEnterAction.problem() != null || bedEnterAction.canSleep() != BedRuleResult.ALLOWED
+                || bedEnterAction.canSetSpawn() != BedRuleResult.ALLOWED) {
             return;
         }
 

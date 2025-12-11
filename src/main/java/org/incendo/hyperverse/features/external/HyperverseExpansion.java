@@ -41,7 +41,6 @@ final class HyperverseExpansion extends PlaceholderExpansion {
     private final String author;
     private final String version;
 
-    @SuppressWarnings("UnstableApiUsage")
     public HyperverseExpansion() {
         this.plugin = JavaPlugin.getPlugin(Hyperverse.class);
         final PluginMeta descriptionFile = this.plugin.getPluginMeta();
