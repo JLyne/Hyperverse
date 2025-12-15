@@ -639,7 +639,7 @@ public final class HyperCommandManager extends BaseCommand {
 
     @Subcommand("teleport|tp")
     @CommandAlias("hvtp")
-    @CommandPermission("hyperverse.teleport")
+    @CommandPermission("hyperverse.teleport.other")
     @CommandCompletion("@hyperworlds:state=loaded @vararg_player_world:pop=0,in_world=true")
     public void doMassTeleport(final CommandSender sender, final HyperWorld world, final String[] players) {
         if (players.length == 0) {
