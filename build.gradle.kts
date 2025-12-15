@@ -67,7 +67,6 @@ paper {
             "list" to "Allows players to list worlds",
             "teleport" to "Allows players to teleport between worlds",
             "teleport.other" to "Allows players to teleport other players between worlds",
-            "teleportgroup" to "Allows players to teleport to their last location in a given profile group",
             "info" to "Allows players to view world info",
             "unload" to "Allows players to unload worlds",
             "load" to "Allows players to load worlds",
