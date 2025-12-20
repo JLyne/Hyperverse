@@ -543,10 +543,10 @@ public final class HyperCommandManager extends BaseCommand {
         }
         this.worldManager.addWorld(hyperWorld);
         MessageUtil.sendMessage(sender, Messages.messageWorldImportFinished);
-        if (sender instanceof Player) {
+        if (sender instanceof Player player) {
             //Schedule teleport 1-tick later so the world has a chance to load.
             Bukkit.getScheduler().runTaskLater(Hyperverse.getPlugin(Hyperverse.class),
-                    () -> this.doTeleport((Player) sender, this.worldManager.getWorld(bukkitWorld)), 1L
+                    () -> this.doTeleport(sender, this.worldManager.getWorld(bukkitWorld), null), 1L
             );
         }
     }
@@ -618,38 +618,9 @@ public final class HyperCommandManager extends BaseCommand {
     @Subcommand("teleport|tp")
     @CommandAlias("hvtp")
     @CommandPermission("hyperverse.teleport")
-    @CommandCompletion("@hyperworlds:player=not_in,state=loaded")
-    @Description("{@@command.teleport}")
-    public void doTeleport(final Player player, final HyperWorld world) {
-        if (world == null) {
-            MessageUtil.sendMessage(player, Messages.messageNoSuchWorld);
-            return;
-        }
-        if (!world.isLoaded()) {
-            MessageUtil.sendMessage(player, Messages.messageWorldNotLoaded);
-            return;
-        }
-        if (world.getBukkitWorld() == player.getWorld()) {
-            MessageUtil.sendMessage(player, Messages.messageAlreadyInWorld);
-            return;
-        }
-        MessageUtil.sendMessage(player, Messages.messageTeleporting, "%world%", world.getDisplayName());
-        world.teleportPlayer(player);
-    }
-
-    @Subcommand("teleport|tp")
-    @CommandAlias("hvtp")
-    @CommandPermission("hyperverse.teleport.other")
     @CommandCompletion("@hyperworlds:state=loaded @vararg_player_world:pop=0,in_world=true")
-    public void doMassTeleport(final CommandSender sender, final HyperWorld world, final String[] players) {
-        if (players.length == 0) {
-            if (sender instanceof Player) {
-                this.doTeleport((Player) sender, world);
-            } else {
-                MessageUtil.sendMessage(sender, Messages.messageSpecifyPlayer);
-            }
-            return;
-        }
+    @Description("{@@command.teleport}")
+    public void doTeleport(final CommandSender sender, final HyperWorld world, @Optional final String[] players) {
         if (world == null) {
             MessageUtil.sendMessage(sender, Messages.messageNoSuchWorld);
             return;
@@ -658,6 +629,28 @@ public final class HyperCommandManager extends BaseCommand {
             MessageUtil.sendMessage(sender, Messages.messageWorldNotLoaded);
             return;
         }
+
+        if (players == null || players.length == 0) {
+            if (!(sender instanceof Player player)) {
+                MessageUtil.sendMessage(sender, Messages.messageSpecifyPlayer);
+                return;
+            }
+
+            if (world.getBukkitWorld() == player.getWorld()) {
+                MessageUtil.sendMessage(player, Messages.messageAlreadyInWorld);
+                return;
+            }
+
+            MessageUtil.sendMessage(player, Messages.messageTeleporting, "%world%", world.getDisplayName());
+            world.teleportPlayer(player);
+            return;
+        }
+
+        if (!sender.hasPermission("hyperverse.teleport.other")) {
+            sender.sendMessage(Bukkit.permissionMessage());
+            return;
+        }
+
         final List<Player> playerList = new ArrayList<>(players.length);
         for (final String rawPlayer : players) {
             final Player player = Bukkit.getPlayer(rawPlayer);
