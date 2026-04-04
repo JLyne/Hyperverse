@@ -34,6 +34,7 @@ import org.bukkit.event.entity.EntityPortalEvent;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 import org.bukkit.event.player.PlayerBedEnterEvent;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerPortalEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
@@ -125,6 +126,17 @@ public final class EventListener implements Listener {
                     LocationType.PLAYER_LOCATION
             ), true, false);
         }
+    }
+
+    @EventHandler
+    public void onPlayerJoin(final @NonNull PlayerJoinEvent event) {
+        final Player player = event.getPlayer();
+        final HyperWorld hyperWorld = this.worldManager.getWorld(player.getWorld());
+        if (hyperWorld == null) {
+            return;
+        }
+
+        this.setDefaultGameMode(player, hyperWorld);
     }
 
     @EventHandler
