@@ -1,10 +1,10 @@
 [versions]
 ktlint = "0.50.0"
-paperweight = "2.0.0-beta.19"
-pluginyml = "0.8.0"
+paperweight = "2.0.0-beta.21"
+pluginyml = "0.9.0"
 
 # Platforms
-minecraft = "1.21.11-R0.1-SNAPSHOT"
+minecraft = "26.1.1.build.+"
 
 # Libraries
 cloud = "1.8.4"
