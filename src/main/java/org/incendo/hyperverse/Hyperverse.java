@@ -81,7 +81,7 @@ public final class Hyperverse extends JavaPlugin implements HyperverseAPI, Liste
     private final ServicePipeline servicePipeline = ServicePipeline.builder().build();
 
     private final List<String> supportedVersions = List.of(
-            "26.1.2"
+            "26.2"
     );
 
     private WorldManager worldManager;
