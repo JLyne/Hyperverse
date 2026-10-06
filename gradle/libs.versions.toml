@@ -1,10 +1,10 @@
 [versions]
 ktlint = "0.50.0"
-paperweight = "2.0.0-beta.21"
+paperweight = "2.0.0-beta.24"
 pluginyml = "0.9.0"
 
 # Platforms
-minecraft = "26.2.build.+"
+minecraft = "26.3.build.+"
 
 # Libraries
 cloud = "1.8.4"
@@ -12,7 +12,7 @@ guice = "6.0.0"
 configurate = "4.1.2"
 
 # Minecraft Plugins
-placeholderapi = "2.12.2"
+placeholderapi = "2.12.3"
 
 [libraries]
 

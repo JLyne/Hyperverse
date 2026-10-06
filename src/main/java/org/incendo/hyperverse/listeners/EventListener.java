@@ -341,7 +341,6 @@ public final class EventListener implements Listener {
         }
     }
 
-    @SuppressWarnings("UnstableApiUsage")
     @EventHandler(priority = EventPriority.MONITOR)
     public void onSleep(final @NonNull PlayerBedEnterEvent event) {
         if (!this.hyperConfiguration.shouldPersistLocations()) {
