@@ -60,7 +60,7 @@ import org.incendo.hyperverse.modules.HyperEventFactory;
 import org.incendo.hyperverse.util.MessageUtil;
 import org.incendo.hyperverse.world.HyperWorld;
 import org.incendo.hyperverse.world.WorldManager;
-import org.incendo.hyperverse.world.WorldType;
+import org.incendo.hyperverse.world.WorldEnvironment;
 import org.jetbrains.annotations.NotNull;
 
 import javax.inject.Inject;
@@ -186,7 +186,7 @@ public final class EventListener implements Listener {
             return;
         }
 
-        if (hyperWorld.getConfiguration().getType() == WorldType.END
+        if (hyperWorld.getConfiguration().getType() == WorldEnvironment.END
                 && event.getPlayer().getLocation().getBlock().getType() == Material.END_PORTAL) {
             final Location destination =
                     hyperWorld.getTeleportationManager().endDestination(event.getPlayer());

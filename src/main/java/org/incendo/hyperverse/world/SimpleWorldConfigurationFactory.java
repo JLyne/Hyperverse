@@ -59,10 +59,10 @@ public final class SimpleWorldConfigurationFactory implements WorldConfiguration
         final WorldConfigurationBuilder worldConfigurationBuilder = builder();
         worldConfigurationBuilder.setName(world.getName());
         if (world.getWorldType() != null) {
-            worldConfigurationBuilder.setWorldFeatures(Objects.requireNonNull(WorldFeatures
-                    .fromBukkitType(world.getWorldType())));
+            worldConfigurationBuilder.setWorldFeatures(Objects.requireNonNull(WorldType
+                    .fromBukkit(world.getWorldType())));
         }
-        worldConfigurationBuilder.setType(WorldType.fromBukkit(world.getEnvironment()));
+        worldConfigurationBuilder.setType(WorldEnvironment.fromBukkit(world.getEnvironment()));
         worldConfigurationBuilder.setSeed(world.getSeed());
         worldConfigurationBuilder.setGenerateStructures(world.canGenerateStructures()
                 ? WorldStructureSetting.GENERATE_STRUCTURES : WorldStructureSetting.NO_STRUCTURES);

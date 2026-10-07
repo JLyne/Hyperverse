@@ -37,8 +37,8 @@ public final class WorldConfiguration implements Cloneable {
     private static final Gson GSON = SimpleWorldConfigurationFactory.GSON;
 
     private String name;
-    private WorldType type;
-    private WorldFeatures worldFeatures;
+    private WorldEnvironment type;
+    private WorldType worldType;
     private String settings;
     private long seed;
     private boolean generateStructures;
@@ -50,8 +50,8 @@ public final class WorldConfiguration implements Cloneable {
 
     WorldConfiguration(
             final @NonNull String name,
-            final @NonNull WorldType type,
-            final @NonNull WorldFeatures worldFeatures,
+            final @NonNull WorldEnvironment type,
+            final @NonNull WorldType worldType,
             final @NonNull String settings,
             final long seed,
             final boolean generateStructures,
@@ -65,7 +65,7 @@ public final class WorldConfiguration implements Cloneable {
         this.generateStructures = generateStructures;
         this.generator = generator;
         this.generatorArg = generatorArg;
-        this.worldFeatures = worldFeatures;
+        this.worldType = worldType;
         this.flags = new HashMap<>();
     }
 
@@ -103,7 +103,7 @@ public final class WorldConfiguration implements Cloneable {
         other.generateStructures = this.generateStructures;
         other.generator = this.generator;
         other.generatorArg = this.generatorArg;
-        other.worldFeatures = this.worldFeatures;
+        other.worldType = this.worldType;
         other.flags = new HashMap<>(this.flags);
         return other;
     }
@@ -113,8 +113,8 @@ public final class WorldConfiguration implements Cloneable {
      *
      * @return World features enum
      */
-    public @NonNull WorldFeatures getWorldFeatures() {
-        return this.worldFeatures;
+    public @NonNull WorldType getWorldFeatures() {
+        return this.worldType;
     }
 
     /**
@@ -131,7 +131,7 @@ public final class WorldConfiguration implements Cloneable {
      *
      * @return World type
      */
-    public @NonNull WorldType getType() {
+    public @NonNull WorldEnvironment getType() {
         return this.type;
     }
 

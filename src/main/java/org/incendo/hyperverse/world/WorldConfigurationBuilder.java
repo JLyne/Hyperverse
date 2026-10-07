@@ -26,8 +26,8 @@ import org.incendo.hyperverse.util.SeedUtil;
 public class WorldConfigurationBuilder {
 
     private String name;
-    private WorldType type = WorldType.OVER_WORLD;
-    private WorldFeatures worldFeatures = WorldFeatures.NORMAL;
+    private WorldEnvironment type = WorldEnvironment.OVER_WORLD;
+    private WorldType worldType = WorldType.NORMAL;
     private String settings = "";
     private long seed = SeedUtil.randomSeed();
     private WorldStructureSetting generateStructures = WorldStructureSetting.GENERATE_STRUCTURES;
@@ -51,7 +51,7 @@ public class WorldConfigurationBuilder {
      * @param type New world type
      * @return {@code this}
      */
-    public final @NonNull WorldConfigurationBuilder setType(final @NonNull WorldType type) {
+    public final @NonNull WorldConfigurationBuilder setType(final @NonNull WorldEnvironment type) {
         this.type = type;
         return this;
     }
@@ -112,13 +112,13 @@ public class WorldConfigurationBuilder {
     }
 
     /**
-     * Set the {@link WorldFeatures}
+     * Set the {@link WorldType}
      *
-     * @param worldFeatures New world features
+     * @param worldType New world features
      * @return {@code this}
      */
-    public @NonNull WorldConfigurationBuilder setWorldFeatures(final @NonNull WorldFeatures worldFeatures) {
-        this.worldFeatures = worldFeatures;
+    public @NonNull WorldConfigurationBuilder setWorldFeatures(final @NonNull WorldType worldType) {
+        this.worldType = worldType;
         return this;
     }
 
@@ -128,9 +128,9 @@ public class WorldConfigurationBuilder {
      * @return Created instance
      */
     public @NonNull WorldConfiguration createWorldConfiguration() {
-        return new WorldConfiguration(this.name, this.type, this.worldFeatures, this.settings, this.seed,
                 this.generateStructures == WorldStructureSetting.GENERATE_STRUCTURES,
                 this.generator, this.generatorArg
+        return new WorldConfiguration(this.name, this.type, this.worldType, this.settings, this.seed,
         );
     }
 

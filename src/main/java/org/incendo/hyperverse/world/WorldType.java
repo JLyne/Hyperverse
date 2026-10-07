@@ -17,43 +17,57 @@
 
 package org.incendo.hyperverse.world;
 
-import org.bukkit.World;
-import org.checkerframework.checker.nullness.qual.NonNull;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
-import java.util.Arrays;
-import java.util.Collection;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.Optional;
 
-/**
- * World type, mirroring Bukkit's {@link World.Environment}
- */
+@NullMarked
 public enum WorldType {
-    OVER_WORLD(World.Environment.NORMAL, Arrays.asList("overworld", "over_world", "normal")),
-    NETHER(World.Environment.NETHER, Arrays.asList("the_nether", "nether", "hell")),
-    END(World.Environment.THE_END, Arrays.asList("end", "the_end"));
+    NORMAL(org.bukkit.WorldType.NORMAL, "normal"),
+    FLATLAND(org.bukkit.WorldType.FLAT, "flat"),
+    AMPLIFIED(org.bukkit.WorldType.AMPLIFIED, "amplified"),
+    BUFFET("BUFFET", "buffet");
 
-    private final World.Environment bukkitType;
-    private final Collection<String> aliases;
+    private static final IllegalStateException INCOMPATIBLE_VERSION = new IllegalStateException(
+            "WorldType is unavailable on this version.");
+    private final org.bukkit.@Nullable WorldType bukkitType;
+    private final String name;
 
     WorldType(
-            final World.@NonNull Environment bukkitType,
-            final @NonNull Collection<@NonNull String> aliases
+            final org.bukkit.WorldType bukkitType,
+            final String name
     ) {
-        this.bukkitType = bukkitType;
-        this.aliases = aliases;
+        this.bukkitType = Objects.requireNonNull(bukkitType);
+        this.name = name;
+    }
+
+    WorldType(
+            final String enumName,
+            final String name
+    ) {
+        org.bukkit.WorldType worldType;
+        try {
+            worldType = org.bukkit.WorldType.valueOf(enumName);
+        } catch (IllegalArgumentException ex) {
+            worldType = null;
+        }
+        this.bukkitType = worldType;
+        this.name = name;
     }
 
     /**
-     * Attempt to map a string to a world type
+     * Get a {@link WorldType} instance from its name
      *
-     * @param string String to match
-     * @return Optional containing the type, if found
+     * @param name The name
+     * @return Optional that contains the {@link WorldType} instance, if found
      */
-    public static @NonNull Optional<@NonNull WorldType> fromString(final @NonNull String string) {
-        final String normalized = Objects.requireNonNull(string.toLowerCase());
+    public static Optional<WorldType> fromString(final String name) {
+        Objects.requireNonNull(name);
         for (final WorldType worldType : values()) {
-            if (worldType.getAliases().contains(normalized)) {
+            if (worldType.name.equals(name.toLowerCase(Locale.ENGLISH)) && worldType.bukkitType != null) {
                 return Optional.of(worldType);
             }
         }
@@ -61,36 +75,46 @@ public enum WorldType {
     }
 
     /**
-     * Get the world type from a bukkit environment
+     * Create a {@link WorldType} from a Bukkit {@link org.bukkit.WorldType}
      *
-     * @param environment Bukkit environment
-     * @return Equivalent Hyperverse world type
+     * @param bukkitType Bukkit {@link org.bukkit.WorldType}
+     * @return A {@link WorldType} instance, or {@code null} if there's no Hyperverse equivalent
      */
-    public static @NonNull WorldType fromBukkit(final World.@NonNull Environment environment) {
+    public static @Nullable WorldType fromBukkit(final org.bukkit.WorldType bukkitType) {
+        Objects.requireNonNull(bukkitType);
         for (final WorldType worldType : values()) {
-            if (worldType.getBukkitType() == environment) {
+            if (worldType.getBukkitType() == bukkitType) {
                 return worldType;
             }
         }
-        return WorldType.OVER_WORLD;
+        return null;
     }
 
     /**
-     * Get the bukkit equivalent
+     * Get the Bukkit enum world type for this world feature.
      *
-     * @return Bukkit equivalent
+     * @return Returns a never null {@link org.bukkit.WorldType}.
+     * @throws IllegalStateException Thrown if the bukkit world type is not available.
+     *                               This method will always throw an {@link IllegalStateException}
+     *                               if {@link #isAvailable()} returns false.
      */
-    public World.@NonNull Environment getBukkitType() {
+    public org.bukkit.WorldType getBukkitType() throws IllegalStateException {
+        if (this.bukkitType == null) {
+            throw INCOMPATIBLE_VERSION;
+        }
         return this.bukkitType;
     }
 
     /**
-     * Get all aliases of the type name
+     * Whether the feature type is available on the server
      *
-     * @return Name aliases
+     * @return {@code true} if the feature is available, else {@code false}
      */
-    public @NonNull Collection<@NonNull String> getAliases() {
-        return this.aliases;
+    public boolean isAvailable() {
+        return this.bukkitType != null;
     }
 
+    public String getName() {
+        return name;
+    }
 }

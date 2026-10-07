@@ -40,7 +40,7 @@ import org.incendo.hyperverse.service.internal.SafeTeleportService;
 import org.incendo.hyperverse.util.NMSUtil;
 import org.incendo.hyperverse.world.HyperWorld;
 import org.incendo.hyperverse.world.WorldManager;
-import org.incendo.hyperverse.world.WorldType;
+import org.incendo.hyperverse.world.WorldEnvironment;
 
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
@@ -145,12 +145,12 @@ public final class SimpleTeleportationManager implements TeleportationManager {
         int y = location.getBlockY();
         int z = location.getBlockZ();
 
-        if (this.hyperWorld.getConfiguration().getType() != WorldType.NETHER
-                && destination.getConfiguration().getType() == WorldType.NETHER) {
+        if (this.hyperWorld.getConfiguration().getType() != WorldEnvironment.NETHER
+                && destination.getConfiguration().getType() == WorldEnvironment.NETHER) {
             x >>= 3;
             z >>= 3;
-        } else if (this.hyperWorld.getConfiguration().getType() == WorldType.NETHER
-                && destination.getConfiguration().getType() != WorldType.NETHER) {
+        } else if (this.hyperWorld.getConfiguration().getType() == WorldEnvironment.NETHER
+                && destination.getConfiguration().getType() != WorldEnvironment.NETHER) {
             x <<= 3;
             z <<= 3;
         }

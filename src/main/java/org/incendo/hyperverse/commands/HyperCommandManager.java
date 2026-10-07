@@ -66,10 +66,10 @@ import org.incendo.hyperverse.util.WorldUtil;
 import org.incendo.hyperverse.world.HyperWorld;
 import org.incendo.hyperverse.world.WorldConfiguration;
 import org.incendo.hyperverse.world.WorldConfigurationBuilder;
-import org.incendo.hyperverse.world.WorldFeatures;
+import org.incendo.hyperverse.world.WorldType;
 import org.incendo.hyperverse.world.WorldManager;
 import org.incendo.hyperverse.world.WorldStructureSetting;
-import org.incendo.hyperverse.world.WorldType;
+import org.incendo.hyperverse.world.WorldEnvironment;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -196,7 +196,7 @@ public final class HyperCommandManager extends BaseCommand {
                     if (context.getInput().contains(" ")) {
                         return Collections.emptyList();
                     }
-                    return Arrays.stream(WorldType.values()).map(WorldType::name).map(String::toLowerCase)
+                    return Arrays.stream(WorldEnvironment.values()).map(WorldEnvironment::name).map(String::toLowerCase)
                             .collect(Collectors.toList());
                 }
         );
@@ -205,7 +205,7 @@ public final class HyperCommandManager extends BaseCommand {
                     if (context.getInput().contains(" ")) {
                         return Collections.emptyList();
                     }
-                    return Arrays.stream(WorldFeatures.values()).map(WorldFeatures::name).map(String::toLowerCase)
+                    return Arrays.stream(WorldType.values()).map(WorldType::name).map(String::toLowerCase)
                             .collect(Collectors.toList());
                 }
         );
@@ -363,16 +363,16 @@ public final class HyperCommandManager extends BaseCommand {
             return arr;
         });*/
         this.bukkitCommandManager.getCommandContexts().registerContext(
-                WorldType.class, context -> {
+                WorldEnvironment.class, context -> {
                     final String arg = context.popFirstArg();
-                    return WorldType.fromString(arg).orElseThrow(() ->
+                    return WorldEnvironment.fromString(arg).orElseThrow(() ->
                             new InvalidCommandArgument(Messages.messageInvalidWorldType.withoutColorCodes()));
                 }
         );
         this.bukkitCommandManager.getCommandContexts().registerContext(
-                WorldFeatures.class, context -> {
+                WorldType.class, context -> {
                     final String arg = context.popFirstArg();
-                    return WorldFeatures.fromName(arg).orElseThrow(() ->
+                    return WorldType.fromString(arg).orElseThrow(() ->
                             new InvalidCommandArgument(Messages.messageInvalidWorldFeatures.withoutColorCodes()));
                 }
         );
@@ -428,8 +428,8 @@ public final class HyperCommandManager extends BaseCommand {
     @CommandCompletion("@null @generators @worldtypes @null @structures @worldfeatures @null")
     public void createWorld(
             final CommandSender sender, final String world, final String generator,
-            @Default("overworld") final WorldType type, @Optional final Long specifiedSeed,
-            @Default("true") final WorldStructureSetting generateStructures, @Default("normal") final WorldFeatures features,
+            @Default("overworld") final WorldEnvironment type, @Optional final Long specifiedSeed,
+            @Default("true") final WorldStructureSetting generateStructures, @Default("normal") final WorldType features,
             @Default final String settings
     ) {
         final long seed = specifiedSeed == null ? SeedUtil.randomSeed() : specifiedSeed;
@@ -514,7 +514,7 @@ public final class HyperCommandManager extends BaseCommand {
             final CommandSender sender,
             final String worldName,
             final String generator,
-            @Default("over_world") final WorldType worldType
+            @Default("over_world") final WorldEnvironment worldEnvironment
     ) {
         if (this.worldManager.getWorld(worldName) != null) {
             MessageUtil.sendMessage(sender, Messages.messageWorldAlreadyImported);
@@ -528,7 +528,7 @@ public final class HyperCommandManager extends BaseCommand {
         final HyperWorld hyperWorld = this.hyperWorldFactory.create(
                 UUID.randomUUID(),
                 new WorldConfigurationBuilder().setName(worldName).setGenerator(generator)
-                        .setType(worldType).createWorldConfiguration()
+                        .setType(worldEnvironment).createWorldConfiguration()
         );
         final World bukkitWorld;
         try {
