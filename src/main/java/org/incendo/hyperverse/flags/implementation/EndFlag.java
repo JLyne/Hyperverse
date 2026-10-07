@@ -17,16 +17,13 @@
 
 package org.incendo.hyperverse.flags.implementation;
 
+import com.mojang.brigadier.arguments.ArgumentType;
+import com.mojang.brigadier.arguments.StringArgumentType;
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.incendo.hyperverse.Hyperverse;
 import org.incendo.hyperverse.configuration.Messages;
 import org.incendo.hyperverse.flags.FlagParseException;
 import org.incendo.hyperverse.flags.WorldFlag;
 import org.incendo.hyperverse.util.WorldUtil;
-import org.incendo.hyperverse.world.HyperWorld;
-
-import java.util.ArrayList;
-import java.util.Collection;
 
 public final class EndFlag extends WorldFlag<String, EndFlag> {
 
@@ -60,18 +57,18 @@ public final class EndFlag extends WorldFlag<String, EndFlag> {
     }
 
     @Override
-    protected EndFlag flagOf(final @NonNull String value) {
+    public EndFlag flagOf(final @NonNull String value) {
         return new EndFlag(value);
     }
 
+    //FIXME: Needs proper argument type
     @Override
-    public Collection<String> getTabCompletions() {
-        final Collection<HyperWorld> configurations = Hyperverse.getApi().getWorldManager().getWorlds();
-        final Collection<String> worldNames = new ArrayList<>(configurations.size());
-        for (final HyperWorld world : configurations) {
-            worldNames.add(world.getDisplayName());
-        }
-        return worldNames;
+    public ArgumentType<String> getArgumentType() {
+        return StringArgumentType.word();
     }
 
+    @Override
+    public Class<String> valueClass() {
+        return String.class;
+    }
 }

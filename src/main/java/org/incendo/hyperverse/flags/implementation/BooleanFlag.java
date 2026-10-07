@@ -17,6 +17,8 @@
 
 package org.incendo.hyperverse.flags.implementation;
 
+import com.mojang.brigadier.arguments.ArgumentType;
+import com.mojang.brigadier.arguments.BoolArgumentType;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.incendo.hyperverse.configuration.Message;
 import org.incendo.hyperverse.flags.FlagParseException;
@@ -65,7 +67,7 @@ public abstract class BooleanFlag<F extends WorldFlag<Boolean, F>> extends World
     }
 
     @Override
-    public final F merge(final @NonNull Boolean newValue) {
+    public final F merge(final @NonNull Boolean newValue) throws FlagParseException {
         return this.flagOf(getValue() || newValue);
     }
 
@@ -80,8 +82,12 @@ public abstract class BooleanFlag<F extends WorldFlag<Boolean, F>> extends World
     }
 
     @Override
-    public final Collection<String> getTabCompletions() {
-        return Arrays.asList("true", "false");
+    public ArgumentType<Boolean> getArgumentType() {
+        return BoolArgumentType.bool();
     }
 
+    @Override
+    public Class<Boolean> valueClass() {
+        return Boolean.class;
+    }
 }

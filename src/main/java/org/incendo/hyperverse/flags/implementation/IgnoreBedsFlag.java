@@ -30,7 +30,7 @@ public final class IgnoreBedsFlag extends BooleanFlag<IgnoreBedsFlag> {
     }
 
     @Override
-    protected IgnoreBedsFlag flagOf(final @NonNull Boolean value) {
+    public IgnoreBedsFlag flagOf(final @NonNull Boolean value) {
         return value ? IGNORE_BEDS_TRUE : IGNORE_BEDS_FALSE;
     }
 

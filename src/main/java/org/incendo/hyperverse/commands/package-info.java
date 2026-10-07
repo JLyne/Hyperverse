@@ -18,4 +18,7 @@
 /**
  * Things related to world commands
  */
+@NullMarked
 package org.incendo.hyperverse.commands;
+
+import org.jspecify.annotations.NullMarked;

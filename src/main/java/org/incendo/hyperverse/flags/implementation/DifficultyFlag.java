@@ -17,14 +17,13 @@
 
 package org.incendo.hyperverse.flags.implementation;
 
+import com.mojang.brigadier.arguments.ArgumentType;
 import org.bukkit.Difficulty;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.incendo.hyperverse.commands.arguments.EnumArgumentType;
 import org.incendo.hyperverse.configuration.Messages;
 import org.incendo.hyperverse.flags.FlagParseException;
 import org.incendo.hyperverse.flags.WorldFlag;
-
-import java.util.Arrays;
-import java.util.Collection;
 
 public final class DifficultyFlag extends WorldFlag<Difficulty, DifficultyFlag> {
 
@@ -39,20 +38,16 @@ public final class DifficultyFlag extends WorldFlag<Difficulty, DifficultyFlag> 
 
     @Override
     public DifficultyFlag parse(final @NonNull String input) throws FlagParseException {
-        switch (input.toLowerCase()) {
-            case "peaceful":
-                return this.flagOf(Difficulty.PEACEFUL);
-            case "easy":
-                return this.flagOf(Difficulty.EASY);
-            case "normal":
-                return this.flagOf(Difficulty.NORMAL);
-            case "hard":
-                return this.flagOf(Difficulty.HARD);
-            default:
-                throw new FlagParseException(this, input,
-                        "Invalid difficulty. Available values are: peaceful, easy, normal and hard"
-                );
-        }
+        return switch (input.toLowerCase()) {
+            case "peaceful" -> this.flagOf(Difficulty.PEACEFUL);
+            case "easy" -> this.flagOf(Difficulty.EASY);
+            case "normal" -> this.flagOf(Difficulty.NORMAL);
+            case "hard" -> this.flagOf(Difficulty.HARD);
+            default -> throw new FlagParseException(
+                    this, input,
+                    "Invalid difficulty. Available values are: peaceful, easy, normal and hard"
+            );
+        };
     }
 
     @Override
@@ -71,22 +66,23 @@ public final class DifficultyFlag extends WorldFlag<Difficulty, DifficultyFlag> 
     }
 
     @Override
-    protected DifficultyFlag flagOf(final @NonNull Difficulty value) {
-        switch (value) {
-            case PEACEFUL:
-                return DIFFICULTY_FLAG_PEACEFUL;
-            case EASY:
-                return DIFFICULTY_FLAG_EASY;
-            case HARD:
-                return DIFFICULTY_FLAG_HARD;
-            default:
-                return DIFFICULTY_FLAG_NORMAL;
-        }
+    public DifficultyFlag flagOf(final @NonNull Difficulty value) {
+        return switch (value) {
+            case PEACEFUL -> DIFFICULTY_FLAG_PEACEFUL;
+            case EASY -> DIFFICULTY_FLAG_EASY;
+            case HARD -> DIFFICULTY_FLAG_HARD;
+            default -> DIFFICULTY_FLAG_NORMAL;
+        };
     }
 
     @Override
-    public Collection<String> getTabCompletions() {
-        return Arrays.asList("peaceful", "easy", "normal", "hard");
+    public ArgumentType<Difficulty> getArgumentType() {
+        return new EnumArgumentType<>(Difficulty.class, "difficulty");
+    }
+
+    @Override
+    public Class<Difficulty> valueClass() {
+        return null;
     }
 
 }

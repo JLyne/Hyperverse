@@ -30,7 +30,7 @@ public final class PveFlag extends BooleanFlag<PveFlag> {
     }
 
     @Override
-    protected PveFlag flagOf(final @NonNull Boolean value) {
+    public PveFlag flagOf(final @NonNull Boolean value) {
         return value ? PVE_FLAG_TRUE : PVE_FLAG_FALSE;
     }
 

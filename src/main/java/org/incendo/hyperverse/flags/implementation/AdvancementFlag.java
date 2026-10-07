@@ -30,7 +30,7 @@ public final class AdvancementFlag extends BooleanFlag<AdvancementFlag> {
     }
 
     @Override
-    protected AdvancementFlag flagOf(final @NonNull Boolean value) {
+    public AdvancementFlag flagOf(final @NonNull Boolean value) {
         return value ? ADVANCEMENTS_ALLOWED : ADVANCEMENTS_FORBIDDEN;
     }
 

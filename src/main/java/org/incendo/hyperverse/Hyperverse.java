@@ -24,11 +24,14 @@ import com.google.inject.Singleton;
 import com.google.inject.Stage;
 import io.leangen.geantyref.GenericTypeReflector;
 import io.leangen.geantyref.TypeToken;
+import io.papermc.paper.plugin.lifecycle.event.LifecycleEventManager;
+import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.server.ServerLoadEvent;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -194,7 +197,11 @@ public final class Hyperverse extends JavaPlugin implements HyperverseAPI, Liste
 
         // Create the command manager instance
         try {
-            this.injector.getInstance(HyperCommandManager.class);
+            HyperCommandManager brigadierCommandManager =
+                    this.injector.getInstance(HyperCommandManager.class);
+            LifecycleEventManager<Plugin> manager = getLifecycleManager();
+            manager.registerEventHandler(LifecycleEvents.COMMANDS, 
+                    event -> brigadierCommandManager.register(event.registrar()));
         } catch (final Exception e) {
             e.printStackTrace();
         }

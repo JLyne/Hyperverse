@@ -17,6 +17,8 @@
 
 package org.incendo.hyperverse.flags.implementation;
 
+import com.mojang.brigadier.arguments.ArgumentType;
+import com.mojang.brigadier.arguments.StringArgumentType;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.incendo.hyperverse.configuration.Messages;
 import org.incendo.hyperverse.flags.WorldFlag;
@@ -31,7 +33,7 @@ public final class AliasFlag extends WorldFlag<String, AliasFlag> {
 
     @Override
     public AliasFlag parse(final @NonNull String input) {
-        return this.flagOf(input.replaceAll("&[A-Za-z0-9]", ""));
+        return this.flagOf(input);
     }
 
     @Override
@@ -50,8 +52,18 @@ public final class AliasFlag extends WorldFlag<String, AliasFlag> {
     }
 
     @Override
-    protected AliasFlag flagOf(final @NonNull String value) {
+    public AliasFlag flagOf(final @NonNull String value) {
         return new AliasFlag(value);
+    }
+
+    @Override
+    public ArgumentType<String> getArgumentType() {
+        return StringArgumentType.string();
+    }
+
+    @Override
+    public Class<String> valueClass() {
+        return String.class;
     }
 
 }

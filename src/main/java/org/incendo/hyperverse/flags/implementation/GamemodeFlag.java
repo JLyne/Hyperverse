@@ -17,14 +17,13 @@
 
 package org.incendo.hyperverse.flags.implementation;
 
+import com.mojang.brigadier.arguments.ArgumentType;
+import io.papermc.paper.command.brigadier.argument.ArgumentTypes;
 import org.bukkit.GameMode;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.incendo.hyperverse.configuration.Messages;
 import org.incendo.hyperverse.flags.FlagParseException;
 import org.incendo.hyperverse.flags.WorldFlag;
-
-import java.util.Arrays;
-import java.util.Collection;
 
 public final class GamemodeFlag extends WorldFlag<GameMode, GamemodeFlag> {
 
@@ -39,25 +38,13 @@ public final class GamemodeFlag extends WorldFlag<GameMode, GamemodeFlag> {
 
     @Override
     public GamemodeFlag parse(final @NonNull String input) throws FlagParseException {
-        switch (input.toLowerCase()) {
-            case "survival":
-            case "0":
-            case "s":
-                return GAMEMODE_SURVIVAL;
-            case "creative":
-            case "1":
-            case "c":
-                return GAMEMODE_CREATIVE;
-            case "adventure":
-            case "2":
-            case "a":
-                return GAMEMODE_ADVENTURE;
-            case "spectator":
-            case "3":
-                return GAMEMODE_SPECTATOR;
-            default:
-                throw new FlagParseException(this, input, "There is no such game mode");
-        }
+        return switch (input.toLowerCase()) {
+            case "survival" -> GAMEMODE_SURVIVAL;
+            case "creative" -> GAMEMODE_CREATIVE;
+            case "adventure" -> GAMEMODE_ADVENTURE;
+            case "spectator" -> GAMEMODE_SPECTATOR;
+            default -> throw new FlagParseException(this, input, "There is no such game mode");
+        };
     }
 
     @Override
@@ -76,24 +63,23 @@ public final class GamemodeFlag extends WorldFlag<GameMode, GamemodeFlag> {
     }
 
     @Override
-    protected GamemodeFlag flagOf(final @NonNull GameMode value) {
-        switch (value) {
-            case SURVIVAL:
-                return GAMEMODE_SURVIVAL;
-            case CREATIVE:
-                return GAMEMODE_CREATIVE;
-            case ADVENTURE:
-                return GAMEMODE_ADVENTURE;
-            case SPECTATOR:
-                return GAMEMODE_SPECTATOR;
-            default:
-                throw new IllegalArgumentException("Unknown gamemode: " + value.name());
-        }
+    public GamemodeFlag flagOf(final @NonNull GameMode value) {
+        return switch (value) {
+            case SURVIVAL -> GAMEMODE_SURVIVAL;
+            case CREATIVE -> GAMEMODE_CREATIVE;
+            case ADVENTURE -> GAMEMODE_ADVENTURE;
+            case SPECTATOR -> GAMEMODE_SPECTATOR;
+            default -> throw new IllegalArgumentException("Unknown gamemode: " + value.name());
+        };
     }
 
     @Override
-    public Collection<String> getTabCompletions() {
-        return Arrays.asList("survival", "creative", "adventure", "spectator");
+    public ArgumentType<GameMode> getArgumentType() {
+        return ArgumentTypes.gameMode();
     }
 
+    @Override
+    public Class<GameMode> valueClass() {
+        return GameMode.class;
+    }
 }

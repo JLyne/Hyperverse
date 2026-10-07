@@ -30,7 +30,7 @@ public final class LocalRespawnFlag extends BooleanFlag<LocalRespawnFlag> {
     }
 
     @Override
-    protected LocalRespawnFlag flagOf(final @NonNull Boolean value) {
+    public LocalRespawnFlag flagOf(final @NonNull Boolean value) {
         return value ? RESPAWN_TRUE : RESPAWN_FALSE;
     }
 

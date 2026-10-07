@@ -17,6 +17,8 @@
 
 package org.incendo.hyperverse.flags.implementation;
 
+import com.mojang.brigadier.arguments.ArgumentType;
+import com.mojang.brigadier.arguments.StringArgumentType;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.incendo.hyperverse.configuration.Messages;
 import org.incendo.hyperverse.flags.FlagParseException;
@@ -62,8 +64,17 @@ public final class WorldPermissionFlag extends WorldFlag<String, WorldPermission
     }
 
     @Override
-    protected WorldPermissionFlag flagOf(final @NonNull String value) {
+    public WorldPermissionFlag flagOf(final @NonNull String value) {
         return new WorldPermissionFlag(value);
     }
 
+    @Override
+    public ArgumentType<String> getArgumentType() {
+        return StringArgumentType.word();
+    }
+
+    @Override
+    public Class<String> valueClass() {
+        return String.class;
+    }
 }

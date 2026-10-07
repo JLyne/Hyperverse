@@ -30,7 +30,7 @@ public final class ForceSpawn extends BooleanFlag<ForceSpawn> {
     }
 
     @Override
-    protected ForceSpawn flagOf(final @NonNull Boolean value) {
+    public ForceSpawn flagOf(final @NonNull Boolean value) {
         return value ? FORCE_SPAWN_TRUE : FORCE_SPAWN_FALSE;
     }
 

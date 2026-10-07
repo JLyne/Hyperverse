@@ -30,7 +30,7 @@ public final class SaveWorldFlag extends BooleanFlag<SaveWorldFlag> {
     }
 
     @Override
-    protected SaveWorldFlag flagOf(final @NonNull Boolean value) {
+    public SaveWorldFlag flagOf(final @NonNull Boolean value) {
         return value ? SAVE_WORLD_TRUE : SAVE_WORLD_FALSE;
     }
 

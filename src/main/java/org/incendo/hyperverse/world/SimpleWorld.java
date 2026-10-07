@@ -319,11 +319,11 @@ public final class SimpleWorld implements HyperWorld {
 
             for (final GameRule<?> gameRule : gameRuleRegistry) {
                 final Object value = this.bukkitWorld.getGameRuleValue(gameRule);
-                if (value == this.bukkitWorld.getGameRuleDefault(gameRule)) {
+                if (value == gameRule.getDefaultValue()) {
                     continue;
                 }
                 gameRuleStringBuilder.append(gameRule.getKey()).append("=")
-                        .append(value != null ? value.toString() : "null").append(" ");
+                        .append(value).append(" ");
             }
 
             MessageUtil.sendMessage(

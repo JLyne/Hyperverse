@@ -19,11 +19,9 @@ package org.incendo.hyperverse.flags;
 
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
+import com.mojang.brigadier.arguments.ArgumentType;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.incendo.hyperverse.configuration.Message;
-
-import java.util.Collection;
-import java.util.Collections;
 
 public abstract class WorldFlag<T, F extends WorldFlag<T, F>> {
 
@@ -76,7 +74,7 @@ public abstract class WorldFlag<T, F extends WorldFlag<T, F>> {
      * @param newValue New flag value.
      * @return Flag containing parsed flag value.
      */
-    public abstract F merge(final @NonNull T newValue);
+    public abstract F merge(final @NonNull T newValue) throws FlagParseException;
 
     /**
      * Returns a string representation of the flag instance, that when
@@ -114,7 +112,7 @@ public abstract class WorldFlag<T, F extends WorldFlag<T, F>> {
      */
     public abstract String getExample();
 
-    protected abstract F flagOf(@NonNull T value);
+    public abstract F flagOf(@NonNull T value) throws FlagParseException;
 
     /**
      * Create a new instance of the flag using a provided
@@ -123,19 +121,23 @@ public abstract class WorldFlag<T, F extends WorldFlag<T, F>> {
      * @param value The flag value
      * @return The created flag instance
      */
-    public final F createFlagInstance(final @NonNull T value) {
+    public final F createFlagInstance(final @NonNull T value) throws FlagParseException {
         return this.flagOf(Preconditions.checkNotNull(value));
     }
-
+    
     /**
-     * Get the tab completable values associated with the flag type, or
-     * an empty collection if tab completion isn't supported.
+     * Get the brigadier argument type associated with the flag type
      *
-     * @return Collection containing tab completable flag values
+     * @return Argument type
      */
-    public Collection<String> getTabCompletions() {
-        return Collections.emptyList();
-    }
+    public abstract ArgumentType<T> getArgumentType();
+    
+    /**
+     * Get the class of the value returned by the brigadier argument type associated with the flag type
+     *
+     * @return Class of value returned by argument type
+     */
+    public abstract Class<T> valueClass();
 
     @Override
     public final boolean equals(final Object o) {
