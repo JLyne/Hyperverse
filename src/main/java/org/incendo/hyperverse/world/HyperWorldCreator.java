@@ -21,6 +21,7 @@ import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
 import org.bukkit.WorldCreator;
 import org.bukkit.WorldType;
+import org.bukkit.generator.BiomeProvider;
 import org.bukkit.generator.ChunkGenerator;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
@@ -46,12 +47,20 @@ public final class HyperWorldCreator extends WorldCreator {
      */
     public @NonNull ValidationResult validate() {
         final WorldConfiguration worldConfiguration = this.hyperWorld.getConfiguration();
-        if (!worldConfiguration.getGenerator().isEmpty()
+        if (worldConfiguration.getGenerator() != null
                 && !worldConfiguration.getGenerator().equalsIgnoreCase("vanilla")) {
             final ChunkGenerator chunkGenerator =
-                    getGeneratorForName(worldConfiguration.getName(), this.getJoinedName(), null);
+                    getGeneratorForName(worldConfiguration.getName(), this.getGenerator(), null);
             if (chunkGenerator == null) {
                 return ValidationResult.UNKNOWN_GENERATOR;
+            }
+        }
+        if (worldConfiguration.getBiomeProvider() != null
+                && !worldConfiguration.getBiomeProvider().equalsIgnoreCase("vanilla")) {
+            final BiomeProvider biomeProvider =
+                    getBiomeProviderForName(worldConfiguration.getName(), this.getBiomeProvider(), null);
+            if (biomeProvider == null) {
+                return ValidationResult.UNKNOWN_BIOME_PROVIDER;
             }
         }
         return ValidationResult.SUCCESS;
@@ -71,15 +80,27 @@ public final class HyperWorldCreator extends WorldCreator {
         this.generatorSettings(worldConfiguration.getSettings());
         this.seed(worldConfiguration.getSeed());
         this.generateStructures(worldConfiguration.isGenerateStructures());
-        this.generator(this.getJoinedName());
+        this.hardcore(worldConfiguration.isHardcore());
+        this.bonusChest(worldConfiguration.isBonusChest());
+        this.generator(this.getGenerator());
+        this.biomeProvider(this.getBiomeProvider());
     }
 
-    private @NonNull String getJoinedName() {
-        if (this.hyperWorld.getConfiguration().getGeneratorArg().isEmpty()) {
+    private @NonNull String getGenerator() {
+        if (this.hyperWorld.getConfiguration().getGeneratorArg() == null) {
             return this.hyperWorld.getConfiguration().getGenerator();
         }
         return String.format("%s:%s", this.hyperWorld.getConfiguration().getGenerator(),
                 this.hyperWorld.getConfiguration().getGeneratorArg()
+        );
+    }
+    
+    private @NonNull String getBiomeProvider() {
+        if (this.hyperWorld.getConfiguration().getBiomeProviderArg() == null) {
+            return this.hyperWorld.getConfiguration().getBiomeProvider();
+        }
+        return String.format("%s:%s", this.hyperWorld.getConfiguration().getBiomeProvider(),
+                this.hyperWorld.getConfiguration().getBiomeProviderArg()
         );
     }
 
@@ -89,6 +110,7 @@ public final class HyperWorldCreator extends WorldCreator {
     public enum ValidationResult {
         SUCCESS,
         UNKNOWN_GENERATOR,
+        UNKNOWN_BIOME_PROVIDER,
         NAME_TAKEN,
         UNKNOWN_ERROR
     }

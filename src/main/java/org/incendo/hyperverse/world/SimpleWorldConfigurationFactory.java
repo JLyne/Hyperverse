@@ -64,8 +64,7 @@ public final class SimpleWorldConfigurationFactory implements WorldConfiguration
         }
         worldConfigurationBuilder.setType(WorldEnvironment.fromBukkit(world.getEnvironment()));
         worldConfigurationBuilder.setSeed(world.getSeed());
-        worldConfigurationBuilder.setGenerateStructures(world.canGenerateStructures()
-                ? WorldStructureSetting.GENERATE_STRUCTURES : WorldStructureSetting.NO_STRUCTURES);
+        worldConfigurationBuilder.setGenerateStructures(world.canGenerateStructures());
         // Try to retrieve the generator
         try {
             if (this.server.getAllowNether()

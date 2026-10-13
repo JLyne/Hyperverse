@@ -17,8 +17,9 @@
 
 package org.incendo.hyperverse.world;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
 import org.incendo.hyperverse.util.SeedUtil;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Builder for {@link WorldConfiguration}
@@ -29,10 +30,14 @@ public class WorldConfigurationBuilder {
     private WorldEnvironment type = WorldEnvironment.OVER_WORLD;
     private WorldType worldType = WorldType.NORMAL;
     private String settings = "";
-    private long seed = SeedUtil.randomSeed();
-    private WorldStructureSetting generateStructures = WorldStructureSetting.GENERATE_STRUCTURES;
-    private String generator = "";
-    private String generatorArg = "";
+    private Long seed = null;
+    private boolean generateStructures = true;
+    private boolean hardcore = false;
+    private boolean bonusChest = false;
+    private String generator;
+    private String generatorArg;
+    private String biomeProvider;
+    private String biomeProviderArg;
 
     /**
      * Set the world name
@@ -84,8 +89,30 @@ public class WorldConfigurationBuilder {
      * @param generateStructures Whether structures should be generated
      * @return {@code this}
      */
-    public @NonNull WorldConfigurationBuilder setGenerateStructures(final @NonNull WorldStructureSetting generateStructures) {
+    public @NonNull WorldConfigurationBuilder setGenerateStructures(final boolean generateStructures) {
         this.generateStructures = generateStructures;
+        return this;
+    }
+
+    /**
+     * Set whether hardcode mode should be enabled
+     *
+     * @param hardcore Whether hardcode mode should be enabled
+     * @return {@code this}
+     */
+    public @NonNull WorldConfigurationBuilder setHardcore(final boolean hardcore) {
+        this.hardcore = hardcore;
+        return this;
+    }
+
+    /**
+     * Set whether the bonus should be generated
+     *
+     * @param bonusChest Whether the bonus should be generated
+     * @return {@code this}
+     */
+    public @NonNull WorldConfigurationBuilder setBonusChest(final boolean bonusChest) {
+        this.bonusChest = bonusChest;
         return this;
     }
 
@@ -95,7 +122,7 @@ public class WorldConfigurationBuilder {
      * @param generator New generator
      * @return {@code this}
      */
-    public @NonNull WorldConfigurationBuilder setGenerator(final @NonNull String generator) {
+    public @NonNull WorldConfigurationBuilder setGenerator(final @Nullable String generator) {
         this.generator = generator;
         return this;
     }
@@ -106,8 +133,30 @@ public class WorldConfigurationBuilder {
      * @param generatorArg New generator arguments
      * @return {@code this}
      */
-    public @NonNull WorldConfigurationBuilder setGeneratorArg(final @NonNull String generatorArg) {
+    public @NonNull WorldConfigurationBuilder setGeneratorArg(final @Nullable String generatorArg) {
         this.generatorArg = generatorArg;
+        return this;
+    }
+    
+    /**
+     * Set the biome provider
+     *
+     * @param biomeProvider New biome provider
+     * @return {@code this}
+     */
+    public @NonNull WorldConfigurationBuilder setBiomeProvider(final @Nullable String biomeProvider) {
+        this.biomeProvider = biomeProvider;
+        return this;
+    }
+    
+    /**
+     * Set the biome provider arguments
+     *
+     * @param biomeProviderArg New biome provider arguments
+     * @return {@code this}
+     */
+    public @NonNull WorldConfigurationBuilder setBiomeProviderArg(final @Nullable String biomeProviderArg) {
+        this.biomeProviderArg = biomeProviderArg;
         return this;
     }
 
@@ -128,9 +177,11 @@ public class WorldConfigurationBuilder {
      * @return Created instance
      */
     public @NonNull WorldConfiguration createWorldConfiguration() {
-                this.generateStructures == WorldStructureSetting.GENERATE_STRUCTURES,
-                this.generator, this.generatorArg
-        return new WorldConfiguration(this.name, this.type, this.worldType, this.settings, this.seed,
+                
+        return new WorldConfiguration(this.name, this.type, this.worldType, this.settings, 
+                this.seed == null ? SeedUtil.randomSeed() : this.seed, this.generateStructures,
+                this.hardcore, this.bonusChest, this.generator, this.generatorArg, 
+                this.biomeProvider, this.biomeProviderArg
         );
     }
 

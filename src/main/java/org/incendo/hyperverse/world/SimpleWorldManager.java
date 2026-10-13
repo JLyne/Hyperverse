@@ -205,6 +205,12 @@ public final class SimpleWorldManager implements WorldManager, Listener {
                             "%generator%", hyperWorld.getConfiguration().getGenerator()
                     );
                     break;
+                case UNKNOWN_BIOME_PROVIDER:
+                    MessageUtil.sendMessage(consoleSender, Messages.messageBiomeProviderInvalid,
+                            "%world%", hyperWorld.getConfiguration().getName(),
+                            "%biome_provider%", hyperWorld.getConfiguration().getBiomeProvider()
+                    );
+                    break;
                 case SUCCESS:
                     break;
                 default:

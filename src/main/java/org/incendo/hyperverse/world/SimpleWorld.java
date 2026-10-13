@@ -220,37 +220,65 @@ public final class SimpleWorld implements HyperWorld {
 
     @Override
     public void sendWorldInfo(final @NonNull CommandSender sender) {
-        MessageUtil
-                .sendMessage(sender, Messages.messageWorldProperty, "%property%", "name", "%value%",
-                        this.configuration.getName()
-                );
+        MessageUtil.sendMessage(
+                sender, Messages.messageWorldProperty, "%property%", "name", "%value%",
+                this.configuration.getName()
+        );
+
         if (!this.getFlag(AliasFlag.class).isEmpty()) {
-            MessageUtil.sendMessage(sender, Messages.messageWorldProperty, "%property%", "alias", "%value%",
+            MessageUtil.sendMessage(
+                    sender, Messages.messageWorldProperty, "%property%", "alias", "%value%",
                     this.getDisplayName()
             );
         }
-        MessageUtil
-                .sendMessage(sender, Messages.messageWorldProperty, "%property%", "type", "%value%",
-                        this.configuration.getType().name()
-                );
-        MessageUtil
-                .sendMessage(sender, Messages.messageWorldProperty, "%property%", "seed", "%value%",
-                        Long.toString(this.configuration.getSeed())
-                );
-        MessageUtil.sendMessage(sender, Messages.messageWorldProperty, "%property%", "structures",
+
+        MessageUtil.sendMessage(
+                sender, Messages.messageWorldProperty, "%property%", "type", "%value%",
+                this.configuration.getType().name()
+        );
+        MessageUtil.sendMessage(
+                sender, Messages.messageWorldProperty, "%property%", "seed", "%value%",
+                Long.toString(this.configuration.getSeed())
+        );
+        MessageUtil.sendMessage(
+                sender, Messages.messageWorldProperty, "%property%", "structures",
                 "%value%", Boolean.toString(this.configuration.isGenerateStructures())
         );
-        MessageUtil
-                .sendMessage(sender, Messages.messageWorldProperty, "%property%", "settings", "%value%",
-                        this.configuration.getSettings()
-                );
-        MessageUtil.sendMessage(sender, Messages.messageWorldProperty, "%property%", "generator",
-                "%value%", this.configuration.getGenerator()
+        MessageUtil.sendMessage(
+                sender, Messages.messageWorldProperty, "%property%", "hardcore", "%value%",
+                Boolean.toString(this.configuration.isHardcore())
         );
-        MessageUtil
-                .sendMessage(sender, Messages.messageWorldProperty, "%property%", "generator arg",
-                        "%value%", this.configuration.getGeneratorArg()
-                );
+        MessageUtil.sendMessage(
+                sender, Messages.messageWorldProperty, "%property%", "bonus chest", "%value%",
+                Boolean.toString(this.configuration.isBonusChest())
+        );
+        MessageUtil.sendMessage(
+                sender, Messages.messageWorldProperty, "%property%", "settings", "%value%",
+                this.configuration.getSettings()
+        );
+
+        String generator = configuration.getGenerator();
+        String generatorArg = configuration.getGeneratorArg();
+        MessageUtil.sendMessage(
+                sender, Messages.messageWorldProperty, "%property%", "generator", "%value%",
+                generator != null ? generator : "vanilla"
+        );
+        MessageUtil.sendMessage(
+                sender, Messages.messageWorldProperty, "%property%", "generator arg", "%value%",
+                generatorArg != null ? generatorArg : "(none)"
+        );
+
+        String provider = configuration.getBiomeProvider();
+        String providerArg = configuration.getBiomeProviderArg();
+        MessageUtil.sendMessage(
+                sender, Messages.messageWorldProperty, "%property%", "biome provider", "%value%",
+                provider != null ? provider : "vanilla"
+        );
+        MessageUtil.sendMessage(
+                sender, Messages.messageWorldProperty, "%property%", "biome provider arg",
+                "%value%", providerArg != null ? providerArg : "(none)"
+        );
+
         String loadedChunks;
         try {
             loadedChunks = String.format(
@@ -261,9 +289,12 @@ public final class SimpleWorld implements HyperWorld {
         } catch (final Exception ignored) {
             loadedChunks = "unknown";
         }
-        MessageUtil.sendMessage(sender, Messages.messageWorldProperty, "%property%", "loaded chunks",
-                "%value%", loadedChunks
+
+        MessageUtil.sendMessage(
+                sender, Messages.messageWorldProperty, "%property%", "loaded chunks", "%value%",
+                loadedChunks
         );
+
         // Flags
         final StringBuilder flagStringBuilder = new StringBuilder();
         final Iterator<Map.Entry<String, String>> flagIterator =
@@ -275,10 +306,11 @@ public final class SimpleWorld implements HyperWorld {
                 flagStringBuilder.append(", ");
             }
         }
-        MessageUtil
-                .sendMessage(sender, Messages.messageWorldProperty, "%property%", "flags", "%value%",
-                        flagStringBuilder.toString()
-                );
+
+        MessageUtil.sendMessage(
+                sender, Messages.messageWorldProperty, "%property%", "flags", "%value%",
+                flagStringBuilder.toString()
+        );
 
         if (this.isLoaded()) {
             final StringBuilder gameRuleStringBuilder = new StringBuilder();
@@ -294,8 +326,9 @@ public final class SimpleWorld implements HyperWorld {
                         .append(value != null ? value.toString() : "null").append(" ");
             }
 
-            MessageUtil.sendMessage(sender, Messages.messageWorldProperty, "%property%", "game rules",
-                    "%value%", gameRuleStringBuilder.toString()
+            MessageUtil.sendMessage(
+                    sender, Messages.messageWorldProperty, "%property%", "game rules", "%value%",
+                    gameRuleStringBuilder.toString()
             );
         }
     }

@@ -18,8 +18,8 @@
 package org.incendo.hyperverse.world;
 
 import com.google.gson.Gson;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -42,8 +42,12 @@ public final class WorldConfiguration implements Cloneable {
     private String settings;
     private long seed;
     private boolean generateStructures;
+    private boolean hardcore;
+    private boolean bonusChest;
     private String generator;
     private String generatorArg;
+    private String biomeProvider;
+    private String biomeProviderArg;
     // Mutable properties
     private boolean loaded = true;
     private Map<String, String> flags;
@@ -55,16 +59,24 @@ public final class WorldConfiguration implements Cloneable {
             final @NonNull String settings,
             final long seed,
             final boolean generateStructures,
-            final @NonNull String generator,
-            final @NonNull String generatorArg
+            final boolean hardcore,
+            final boolean bonusChest,
+            final String generator,
+            final String generatorArg,
+            final String biomeProvider,
+            final String biomeProviderArg
     ) {
         this.name = name;
         this.type = type;
         this.settings = settings;
         this.seed = seed;
         this.generateStructures = generateStructures;
+        this.hardcore = hardcore;
+        this.bonusChest = bonusChest;
         this.generator = generator;
         this.generatorArg = generatorArg;
+        this.biomeProvider = biomeProvider;
+        this.biomeProviderArg = biomeProviderArg;
         this.worldType = worldType;
         this.flags = new HashMap<>();
     }
@@ -101,8 +113,12 @@ public final class WorldConfiguration implements Cloneable {
         other.settings = this.settings;
         other.seed = this.seed;
         other.generateStructures = this.generateStructures;
+        other.hardcore = this.hardcore;
+        other.bonusChest = this.bonusChest;
         other.generator = this.generator;
         other.generatorArg = this.generatorArg;
+        other.biomeProvider = this.biomeProvider;
+        other.biomeProviderArg = this.biomeProviderArg;
         other.worldType = this.worldType;
         other.flags = new HashMap<>(this.flags);
         return other;
@@ -164,7 +180,7 @@ public final class WorldConfiguration implements Cloneable {
     }
 
     /**
-     * Check if the world should generate structured
+     * Check if the world should generate structures
      *
      * @return Structure generation status
      */
@@ -173,11 +189,29 @@ public final class WorldConfiguration implements Cloneable {
     }
 
     /**
+     * Check if hardcore mode is enabled for the world
+     *
+     * @return Hardcore mode status
+     */
+    public boolean isHardcore() {
+        return hardcore;
+    }
+
+    /**
+     * Check if the bonus chest will be generated
+     *
+     * @return Bonus chest status
+     */
+    public boolean isBonusChest() {
+        return bonusChest;
+    }
+
+    /**
      * Get the world generator name
      *
      * @return World generator name
      */
-    public @NonNull String getGenerator() {
+    public String getGenerator() {
         return this.generator;
     }
 
@@ -191,12 +225,30 @@ public final class WorldConfiguration implements Cloneable {
     }
 
     /**
-     * Get the world generator ID
+     * Get the world generator arguments
      *
-     * @return World generator ID
+     * @return World generator arguments
      */
-    public @NonNull String getGeneratorArg() {
+    public String getGeneratorArg() {
         return this.generatorArg;
+    }
+
+    /**
+     * Get the biome provider name
+     *
+     * @return World biome provider name
+     */
+    public String getBiomeProvider() {
+        return biomeProvider;
+    }
+
+    /**
+     * Get the biome provider arguments
+     *
+     * @return World biome provider arguments
+     */
+    public String getBiomeProviderArg() {
+        return biomeProviderArg;
     }
 
     /**
@@ -271,10 +323,22 @@ public final class WorldConfiguration implements Cloneable {
     }
 
     @Override
-    public @NonNull String toString() {
-        return "WorldConfiguration{" + "name='" + this.name + '\'' + ", type=" + this.type + ", settings='"
-                + this.settings + '\'' + ", seed=" + this.seed + ", generateStructures=" + this.generateStructures
-                + ", generator='" + this.generator + '\'' + ", generatorArg='" + this.generatorArg + '\'' + '}';
+    public String toString() {
+        return "WorldConfiguration{" +
+                "name='" + name + '\'' +
+                ", type=" + type +
+                ", worldType=" + worldType +
+                ", settings='" + settings + '\'' +
+                ", seed=" + seed +
+                ", generateStructures=" + generateStructures +
+                ", hardcore=" + hardcore +
+                ", bonusChest=" + bonusChest +
+                ", generator='" + generator + '\'' +
+                ", generatorArg='" + generatorArg + '\'' +
+                ", biomeProvider='" + biomeProvider + '\'' +
+                ", biomeProviderArg='" + biomeProviderArg + '\'' +
+                ", loaded=" + loaded +
+                ", flags=" + flags +
+                '}';
     }
-
 }

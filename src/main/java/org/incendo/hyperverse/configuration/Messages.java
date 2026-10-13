@@ -77,6 +77,10 @@ public final class Messages {
     );
     public static final @NonNull Message messageGeneratorInvalid =
             createMessage("world.invalid_generator", "<red>There is no generator with that name: %generator% (World: %world%)");
+        public static final @NonNull Message messageBiomeProviderInvalid =
+            createMessage("world.invalid_biome_provider", "<red>There is no biome provider with that name: %biome_provider% " +
+                    "(World: " +
+                    "%world%)");
     public static final @NonNull Message messageCreationUnknownFailure =
             createMessage("world.unknown_failure", "<red>Something went wrong when generating the world");
     public static final @NonNull Message messageWorldCreationStarted =
