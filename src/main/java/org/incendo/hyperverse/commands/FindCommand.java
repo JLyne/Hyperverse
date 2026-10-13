@@ -12,8 +12,10 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.incendo.hyperverse.configuration.Messages;
 import org.incendo.hyperverse.util.MessageUtil;
+import org.jspecify.annotations.Nullable;
 
 import java.text.DecimalFormat;
+import java.util.List;
 
 import static io.papermc.paper.command.brigadier.Commands.argument;
 import static io.papermc.paper.command.brigadier.Commands.literal;
@@ -27,7 +29,22 @@ public class FindCommand implements HyperCommand {
                         .executes(this::doFind))
                 .build();
     }
-    
+
+    @Override
+    public List<String> getAliases() {
+        return List.of("where");
+    }
+
+    @Override
+    public List<String> getRootAliases() {
+        return List.of("hvf", "hvfind");
+    }
+
+    @Override
+    public @Nullable String getDescription() {
+        return Messages.commandDescriptionFind.toString();
+    }
+
     private int doFind(final CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
         CommandSender sender = ctx.getSource().getSender();
         Player player = (Player) ctx.getArgument("player", PlayerSelectorArgumentResolver.class).resolve(ctx.getSource());

@@ -11,6 +11,9 @@ import org.incendo.hyperverse.commands.arguments.HyperWorldArgumentType;
 import org.incendo.hyperverse.configuration.Messages;
 import org.incendo.hyperverse.util.MessageUtil;
 import org.incendo.hyperverse.world.HyperWorld;
+import org.jspecify.annotations.Nullable;
+
+import java.util.List;
 
 import static io.papermc.paper.command.brigadier.Commands.argument;
 import static io.papermc.paper.command.brigadier.Commands.literal;
@@ -32,6 +35,21 @@ public class InfoCommand implements HyperCommand {
                 .build();
     }
 
+    @Override
+    public List<String> getAliases() {
+        return List.of("i");
+    }
+
+    @Override
+    public List<String> getRootAliases() {
+        return List.of("hvi");
+    }
+
+    @Override
+    public @Nullable String getDescription() {
+        return Messages.commandDescriptionInfo.toString();
+    }
+    
     private int doInfo(final CommandContext<CommandSourceStack> ctx) {
         CommandSender sender = ctx.getSource().getSender();
         HyperWorld world = ctx.getArgument("world", HyperWorld.class);

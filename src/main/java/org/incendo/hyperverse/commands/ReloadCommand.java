@@ -9,6 +9,10 @@ import com.mojang.brigadier.tree.CommandNode;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import org.bukkit.command.CommandSender;
 import org.incendo.hyperverse.Hyperverse;
+import org.incendo.hyperverse.configuration.Messages;
+import org.jspecify.annotations.Nullable;
+
+import java.util.List;
 
 import static io.papermc.paper.command.brigadier.Commands.literal;
 
@@ -19,6 +23,16 @@ public class ReloadCommand implements HyperCommand {
                 .requires(ctx -> ctx.getSender().hasPermission("hyperverse.reload"))
                 .executes(this::doConfigReload)
                 .build();
+    }
+
+    @Override
+    public List<String> getRootAliases() {
+        return List.of("hvreload");
+    }
+
+    @Override
+    public @Nullable String getDescription() {
+        return Messages.commandDescriptionReload.toString();
     }
 
     private int doConfigReload(final CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {

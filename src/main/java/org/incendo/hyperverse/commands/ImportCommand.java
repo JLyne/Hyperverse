@@ -20,7 +20,9 @@ import org.incendo.hyperverse.world.HyperWorld;
 import org.incendo.hyperverse.world.WorldConfigurationBuilder;
 import org.incendo.hyperverse.world.WorldEnvironment;
 import org.incendo.hyperverse.world.WorldManager;
+import org.jspecify.annotations.Nullable;
 
+import java.util.List;
 import java.util.UUID;
 
 import static io.papermc.paper.command.brigadier.Commands.argument;
@@ -62,7 +64,17 @@ public class ImportCommand implements HyperCommand {
                 // TODO: Modern worlds
                 .build();
     }
-    
+
+    @Override
+    public List<String> getRootAliases() {
+        return List.of("hvimport");
+    }
+
+    @Override
+    public @Nullable String getDescription() {
+        return Messages.commandDescriptionImport.toString();
+    }
+
     private int doLegacyImport(
             final CommandContext<CommandSourceStack> ctx,
             final WorldEnvironment worldEnvironment,

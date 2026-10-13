@@ -16,6 +16,7 @@ import org.incendo.hyperverse.commands.arguments.HyperWorldArgumentType;
 import org.incendo.hyperverse.configuration.Messages;
 import org.incendo.hyperverse.util.MessageUtil;
 import org.incendo.hyperverse.world.HyperWorld;
+import org.jspecify.annotations.Nullable;
 
 import static io.papermc.paper.command.brigadier.Commands.argument;
 import static io.papermc.paper.command.brigadier.Commands.literal;
@@ -53,6 +54,11 @@ public class GameRuleCommand implements HyperCommand {
                 .then(literal("set").then(setNode))
                 .then(literal("reset").then(resetNode))
                 .build();
+    }
+
+    @Override
+    public @Nullable String getDescription() {
+        return Messages.commandDescriptionGameRule.toString();
     }
 
     private <T> int doGameRuleSet(final CommandContext<CommandSourceStack> ctx, final GameRule<T> gameRule) {

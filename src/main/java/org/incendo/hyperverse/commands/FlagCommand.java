@@ -18,6 +18,7 @@ import org.incendo.hyperverse.flags.implementation.EndFlag;
 import org.incendo.hyperverse.flags.implementation.NetherFlag;
 import org.incendo.hyperverse.util.MessageUtil;
 import org.incendo.hyperverse.world.HyperWorld;
+import org.jspecify.annotations.Nullable;
 
 import static io.papermc.paper.command.brigadier.Commands.argument;
 import static io.papermc.paper.command.brigadier.Commands.literal;
@@ -66,6 +67,11 @@ public class FlagCommand implements HyperCommand {
                 .build();
     }
 
+    @Override
+    public @Nullable String getDescription() {
+        return Messages.commandDescriptionFlag.toString();
+    }
+    
     private <T, F extends WorldFlag<T, F>> int doFlagSet(CommandContext<CommandSourceStack> ctx) {
         CommandSender sender = ctx.getSource().getSender();
         HyperWorld world = ctx.getArgument("world", HyperWorld.class);

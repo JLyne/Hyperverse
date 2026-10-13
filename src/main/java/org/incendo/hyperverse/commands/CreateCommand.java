@@ -28,6 +28,7 @@ import org.incendo.hyperverse.world.WorldConfigurationBuilder;
 import org.incendo.hyperverse.world.WorldEnvironment;
 import org.incendo.hyperverse.world.WorldManager;
 import org.incendo.hyperverse.world.WorldType;
+import org.jspecify.annotations.Nullable;
 
 import java.util.UUID;
 
@@ -96,7 +97,12 @@ public class CreateCommand implements HyperCommand {
                 .then(worldNode)
                 .build();
     }
-    
+
+    @Override
+    public @Nullable String getDescription() {
+        return Messages.commandDescriptionCreate.toString();
+    }
+
     private int doCreate(CommandContext<CommandSourceStack> ctx) {
         String name = ctx.getArgument("world", String.class);
         CommandSender sender = ctx.getSource().getSender();

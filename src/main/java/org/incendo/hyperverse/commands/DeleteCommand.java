@@ -11,6 +11,7 @@ import org.incendo.hyperverse.commands.arguments.HyperWorldArgumentType;
 import org.incendo.hyperverse.configuration.Messages;
 import org.incendo.hyperverse.util.MessageUtil;
 import org.incendo.hyperverse.world.HyperWorld;
+import org.jspecify.annotations.Nullable;
 
 import java.io.File;
 import java.nio.file.Files;
@@ -41,6 +42,11 @@ public class DeleteCommand implements HyperCommand {
                         .then(argument("remove files", bool())
                                 .executes(ctx -> doDelete(ctx, ctx.getArgument("remove files", Boolean.class)))))
                 .build();
+    }
+    
+    @Override
+    public @Nullable String getDescription() {
+        return Messages.commandDescriptionDelete.toString();
     }
     
     private int doDelete(CommandContext<CommandSourceStack> ctx, final boolean removeFiles) {

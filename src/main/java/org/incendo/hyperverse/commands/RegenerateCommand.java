@@ -19,11 +19,13 @@ import org.incendo.hyperverse.util.SeedUtil;
 import org.incendo.hyperverse.world.HyperWorld;
 import org.incendo.hyperverse.world.WorldConfiguration;
 import org.incendo.hyperverse.world.WorldManager;
+import org.jspecify.annotations.Nullable;
 
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Comparator;
+import java.util.List;
 import java.util.UUID;
 import java.util.stream.Stream;
 
@@ -52,6 +54,16 @@ public class RegenerateCommand implements HyperCommand {
                                 .executes(ctx -> 
                                         this.doRegenerate(ctx, ctx.getArgument("random seed", Boolean.class)))))
                 .build();
+    }
+
+    @Override
+    public List<String> getAliases() {
+        return List.of("regen");
+    }
+
+    @Override
+    public @Nullable String getDescription() {
+        return Messages.commandDescriptionRegenerate.toString();
     }
 
     private int doRegenerate(CommandContext<CommandSourceStack> ctx, final boolean randomiseSeed) {

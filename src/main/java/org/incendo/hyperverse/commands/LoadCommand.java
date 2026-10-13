@@ -12,6 +12,7 @@ import org.incendo.hyperverse.configuration.Messages;
 import org.incendo.hyperverse.exception.HyperWorldValidationException;
 import org.incendo.hyperverse.util.MessageUtil;
 import org.incendo.hyperverse.world.HyperWorld;
+import org.jspecify.annotations.Nullable;
 
 import static io.papermc.paper.command.brigadier.Commands.argument;
 import static io.papermc.paper.command.brigadier.Commands.literal;
@@ -33,6 +34,11 @@ public class LoadCommand implements HyperCommand {
                 .build();
     }
 
+    @Override
+    public @Nullable String getDescription() {
+        return Messages.commandDescriptionLoad.toString();
+    }
+    
     private int doLoad(final CommandContext<CommandSourceStack> ctx) {
         CommandSender sender = ctx.getSource().getSender();
         HyperWorld world = ctx.getArgument("world", HyperWorld.class);

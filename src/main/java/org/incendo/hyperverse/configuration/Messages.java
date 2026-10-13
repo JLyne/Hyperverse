@@ -367,6 +367,63 @@ public final class Messages {
             "flags.alias",
             "Name of the world as shown in lists, placeholders, etc"
     );
+    // Command Descriptions
+    public static final @NonNull Message commandDescriptionCreate = createMessage(
+            "command.create",
+            "Create a new world"
+    );
+    public static final @NonNull Message commandDescriptionList = createMessage(
+            "command.list",
+            "List Hyperverse worlds"
+    );
+    public static final @NonNull Message commandDescriptionInfo = createMessage(
+            "command.info",
+            "See information about a world"
+    );
+    public static final @NonNull Message commandDescriptionImport = createMessage(
+            "command.import",
+            "Import a world into Hyperverse"
+    );
+    public static final @NonNull Message commandDescriptionTeleport = createMessage(
+            "command.teleport",
+            "Teleport between hyperverse worlds"
+    );
+    public static final @NonNull Message commandDescriptionUnload = createMessage(
+            "command.unload",
+            "Unload a world"
+    );
+    public static final @NonNull Message commandDescriptionLoad = createMessage(
+            "command.load",
+            "Load a world"
+    );
+    public static final @NonNull Message commandDescriptionFind = createMessage(
+            "command.find",
+            "See what world a player is in"
+    );
+    public static final @NonNull Message commandDescriptionWho = createMessage(
+            "command.who",
+            "Find the current players in a world"
+    );
+    public static final @NonNull Message commandDescriptionFlag = createMessage(
+            "command.flag",
+            "Set or remove world flags"
+    );
+    public static final @NonNull Message commandDescriptionGameRule = createMessage(
+            "command.gamerule",
+            "Set or remove a world game rule"
+    );
+    public static final @NonNull Message commandDescriptionDelete = createMessage(
+            "command.delete",
+            "Delete a world"
+    );
+    public static final @NonNull Message commandDescriptionReload = createMessage(
+            "command.reload",
+            "Reload the Hyperverse configuration files"
+    );
+    public static final @NonNull Message commandDescriptionRegenerate = createMessage(
+            "command.regenerate",
+            "Regenerate a world"
+    );
 
     public static @NonNull Map<@NonNull String, @NonNull String> getConfiguredMessages() {
         return configuredMessages;

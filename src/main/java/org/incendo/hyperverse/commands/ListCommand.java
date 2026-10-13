@@ -13,6 +13,7 @@ import org.incendo.hyperverse.util.MessageUtil;
 import org.incendo.hyperverse.world.HyperWorld;
 import org.incendo.hyperverse.world.WorldConfiguration;
 import org.incendo.hyperverse.world.WorldManager;
+import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -40,6 +41,21 @@ public class ListCommand implements HyperCommand {
                 .then(argument("page", integer())
                         .executes(ctx -> doList(ctx, ctx.getArgument("page", Integer.class))))
                 .build();
+    }
+
+    @Override
+    public List<String> getRootAliases() {
+        return List.of("hvl");
+    }
+
+    @Override
+    public List<String> getAliases() {
+        return List.of("l", "worlds");
+    }
+
+    @Override
+    public @Nullable String getDescription() {
+        return Messages.commandDescriptionList.toString();
     }
 
     private int doList(final CommandContext<CommandSourceStack> ctx, final int page) {

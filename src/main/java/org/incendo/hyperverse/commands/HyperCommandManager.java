@@ -20,6 +20,7 @@ package org.incendo.hyperverse.commands;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.tree.CommandNode;
 import io.papermc.paper.command.brigadier.Commands;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import org.incendo.hyperverse.Hyperverse;
@@ -70,9 +71,28 @@ public final class HyperCommandManager {
                 .requires(ctx-> ctx.getSender().hasPermission("hyperverse.worlds"));
         
         for(HyperCommand command: commands) {
+            CommandNode<CommandSourceStack> node = command.getCommand();
+            
             hyperverseCommand.then(command.getCommand());
             
-            //TODO: Top level aliases
+            // Subcommand aliases
+            for(String alias: command.getAliases()) {
+                // Make copy of node with alias and redirect to original node's children
+                hyperverseCommand.then(literal(alias)
+                        .requires(command.getCommand().requirement)
+                        .executes(command.getCommand().getCommand())
+                        .redirect(node));
+            }
+            
+            // Top level aliases
+            for(String rootAlias: command.getRootAliases()) {
+                // Make copy of node with alias and redirect to original node's children
+                registrar.register(literal(rootAlias)
+                        .requires(command.getCommand().requirement)
+                        .executes(command.getCommand().getCommand())
+                        .forward(node, null, true)
+                        .build(), command.getDescription());
+            }
         }
 
         registrar.register(hyperverseCommand.build(), "Hyperverse command", List.of("hv", "worlds", "world"));

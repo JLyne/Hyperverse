@@ -16,8 +16,10 @@ import org.incendo.hyperverse.configuration.Messages;
 import org.incendo.hyperverse.util.MessageUtil;
 import org.incendo.hyperverse.world.HyperWorld;
 import org.incendo.hyperverse.world.WorldManager;
+import org.jspecify.annotations.Nullable;
 
 import java.text.DecimalFormat;
+import java.util.List;
 import java.util.StringJoiner;
 
 import static io.papermc.paper.command.brigadier.Commands.argument;
@@ -42,6 +44,16 @@ public class WhoCommand implements HyperCommand {
                 .then(argument("world", loadedWorldArgumentType)
                         .executes(ctx -> doWho(ctx, ctx.getArgument("world", HyperWorld.class))))
                 .build();
+    }
+
+    @Override
+    public List<String> getRootAliases() {
+        return List.of("hvwho");
+    }
+
+    @Override
+    public @Nullable String getDescription() {
+        return Messages.commandDescriptionWho.toString();
     }
 
     private int doWho(CommandContext<CommandSourceStack> ctx) {

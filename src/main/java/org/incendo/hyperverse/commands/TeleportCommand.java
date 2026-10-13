@@ -15,6 +15,7 @@ import org.incendo.hyperverse.commands.arguments.HyperWorldArgumentType;
 import org.incendo.hyperverse.configuration.Messages;
 import org.incendo.hyperverse.util.MessageUtil;
 import org.incendo.hyperverse.world.HyperWorld;
+import org.jspecify.annotations.Nullable;
 
 import java.util.List;
 
@@ -40,6 +41,21 @@ public class TeleportCommand implements HyperCommand {
                                 .requires(ctx -> ctx.getSender().hasPermission("hyperverse.teleport.other"))
                                 .executes(this::doTeleportOther)))
                 .build();
+    }
+
+    @Override
+    public List<String> getAliases() {
+        return List.of("tp");
+    }
+
+    @Override
+    public List<String> getRootAliases() {
+        return List.of("hvtp");
+    }
+
+    @Override
+    public @Nullable String getDescription() {
+        return Messages.commandDescriptionTeleport.toString();
     }
 
     private int doTeleport(CommandContext<CommandSourceStack> ctx) {

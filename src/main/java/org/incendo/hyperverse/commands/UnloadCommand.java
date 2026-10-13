@@ -11,6 +11,7 @@ import org.incendo.hyperverse.commands.arguments.HyperWorldArgumentType;
 import org.incendo.hyperverse.configuration.Messages;
 import org.incendo.hyperverse.util.MessageUtil;
 import org.incendo.hyperverse.world.HyperWorld;
+import org.jspecify.annotations.Nullable;
 
 import static com.mojang.brigadier.arguments.BoolArgumentType.bool;
 import static io.papermc.paper.command.brigadier.Commands.argument;
@@ -35,6 +36,11 @@ public class UnloadCommand implements HyperCommand {
                 .build();
     }
 
+    @Override
+    public @Nullable String getDescription() {
+        return Messages.commandDescriptionUnload.toString();
+    }
+    
     private int doUnload(final CommandContext<CommandSourceStack> ctx, final boolean saveWorld) {
         CommandSender sender = ctx.getSource().getSender();
         HyperWorld world = ctx.getArgument("world", HyperWorld.class);
