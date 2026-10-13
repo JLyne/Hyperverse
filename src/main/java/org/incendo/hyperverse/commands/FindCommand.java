@@ -47,7 +47,7 @@ public class FindCommand implements HyperCommand {
 
     private int doFind(final CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
         CommandSender sender = ctx.getSource().getSender();
-        Player player = (Player) ctx.getArgument("player", PlayerSelectorArgumentResolver.class).resolve(ctx.getSource());
+        Player player = ctx.getArgument("player", PlayerSelectorArgumentResolver.class).resolve(ctx.getSource()).getFirst();
 
         final Location location = player.getLocation();
         final DecimalFormat format = Messages.miscCoordinateDecimalFormat;
