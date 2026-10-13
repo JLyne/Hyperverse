@@ -318,6 +318,10 @@ public final class SimpleWorld implements HyperWorld {
             Registry<@NotNull GameRule<?>> gameRuleRegistry = RegistryAccess.registryAccess().getRegistry(RegistryKey.GAME_RULE);
 
             for (final GameRule<?> gameRule : gameRuleRegistry) {
+                if (!this.bukkitWorld.isEnabled(gameRule)) {
+                    continue;
+                }
+                
                 final Object value = this.bukkitWorld.getGameRuleValue(gameRule);
                 if (value == gameRule.getDefaultValue()) {
                     continue;
