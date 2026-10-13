@@ -2,12 +2,14 @@ package org.incendo.hyperverse.commands;
 
 import com.google.inject.Inject;
 import com.mojang.brigadier.Command;
+import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.arguments.LongArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.tree.ArgumentCommandNode;
 import com.mojang.brigadier.tree.CommandNode;
+import com.mojang.brigadier.tree.LiteralCommandNode;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -30,7 +32,9 @@ import org.incendo.hyperverse.world.WorldManager;
 import org.incendo.hyperverse.world.WorldType;
 import org.jspecify.annotations.Nullable;
 
+import java.util.List;
 import java.util.UUID;
+import java.util.function.BiConsumer;
 
 import static io.papermc.paper.command.brigadier.Commands.argument;
 import static io.papermc.paper.command.brigadier.Commands.literal;
@@ -40,9 +44,9 @@ public class CreateCommand implements HyperCommand {
     private final WorldManager worldManager;
     private final WorldConfigurationFactory worldConfigurationFactory;
     private final HyperWorldFactory hyperWorldFactory;
-    private final GeneratorArgumentType generatorArgumentType;
-    private final WorldEnvironmentArgumentType worldEnvironmentArgumentType;
-    private final WorldTypeArgumentType worldTypeArgumentType;
+    private WorldConfigurationBuilder builder;
+
+    private final List<Argument<?>> optionalArguments;
 
     @Inject
     CreateCommand(final Hyperverse hyperverse, final WorldManager worldManager, 
@@ -52,50 +56,72 @@ public class CreateCommand implements HyperCommand {
         this.worldManager = worldManager;
         this.worldConfigurationFactory = worldConfigurationFactory;
         this.hyperWorldFactory = hyperWorldFactory;
-        generatorArgumentType = new GeneratorArgumentType();
-        worldEnvironmentArgumentType = new WorldEnvironmentArgumentType();
-        worldTypeArgumentType = new WorldTypeArgumentType();
+        
+        builder = this.worldConfigurationFactory.builder();
+
+        final GeneratorArgumentType generatorArgumentType = new GeneratorArgumentType();
+        final WorldEnvironmentArgumentType worldEnvironmentArgumentType = new WorldEnvironmentArgumentType();
+        final WorldTypeArgumentType worldTypeArgumentType = new WorldTypeArgumentType();
+
+        optionalArguments = List.of(
+            new Argument<>("generator", generatorArgumentType, String[].class, 
+                    (builder, value) -> builder.setGenerator(value[0]).setGeneratorArg(value[1])),
+            new Argument<>("biomeprovider", generatorArgumentType, String[].class,
+                    (builder, value) -> builder.setBiomeProvider(value[0]).setBiomeProviderArg(value[1])),
+            new Argument<>("environment", worldEnvironmentArgumentType, WorldEnvironment.class,
+                    WorldConfigurationBuilder::setType),
+            new Argument<>("type", worldTypeArgumentType, WorldType.class, WorldConfigurationBuilder::setWorldFeatures),
+            new Argument<>("typesettings", StringArgumentType.string(), String.class, 
+                    WorldConfigurationBuilder::setSettings),
+            new Argument<>("seed", LongArgumentType.longArg(), long.class, WorldConfigurationBuilder::setSeed),
+            new Argument<>("generatestructures", BoolArgumentType.bool(), boolean.class,
+                    WorldConfigurationBuilder::setGenerateStructures),
+            new Argument<>("hardcore", BoolArgumentType.bool(), boolean.class, WorldConfigurationBuilder::setHardcore),
+            new Argument<>("bonuschest", BoolArgumentType.bool(), boolean.class, WorldConfigurationBuilder::setBonusChest)
+        );
     }
 
     @Override
-    public CommandNode<CommandSourceStack> getCommand() {
-        ArgumentCommandNode<CommandSourceStack, String> worldNode = argument("world", StringArgumentType.word())
-                .executes(this::doCreate)
-                .build();
+    public CommandNode<CommandSourceStack> getCommand() {        
+        // Required world name argument
+        ArgumentCommandNode<CommandSourceStack, String> worldNameNode = argument("name", StringArgumentType.string())
+                .executes(this::doCreate).build();
         
-        // Add a redirect at the end of every argument so any of them can be specified in any order
-        // This does allow the same arguments to be specified multiple times, too bad
-        worldNode.addChild(literal("generator")
-                .then(argument("generator", generatorArgumentType).executes(this::doCreate).redirect(worldNode)).build());
-        
-        worldNode.addChild(literal("biomeprovider")
-                .then(argument("biomeprovider", generatorArgumentType).executes(this::doCreate).redirect(worldNode)).build());
-        
-        worldNode.addChild(literal("environment")
-                .then(argument("environment", worldEnvironmentArgumentType).executes(this::doCreate).redirect(worldNode)).build());
-        
-        worldNode.addChild(literal("type")
-                .then(argument("type", worldTypeArgumentType).executes(this::doCreate).redirect(worldNode)).build());
-        
-        worldNode.addChild(literal("typesettings")
-                .then(argument("typesettings", StringArgumentType.string()).executes(this::doCreate).redirect(worldNode)).build());
-        
-        worldNode.addChild(literal("seed")
-                .then(argument("seed", LongArgumentType.longArg()).executes(this::doCreate).redirect(worldNode)).build());
-        
-        worldNode.addChild(literal("generatestructures")
-                .then(argument("generatestructures", BoolArgumentType.bool()).executes(this::doCreate).redirect(worldNode)).build());
-        
-        worldNode.addChild(literal("hardcore")
-                .then(argument("hardcore", BoolArgumentType.bool()).executes(this::doCreate).redirect(worldNode)).build());
-        
-        worldNode.addChild(literal("bonuschest")
-                .then(argument("bonuschest", BoolArgumentType.bool()).executes(this::doCreate).redirect(worldNode)).build());
-        
+        // The create command has 9 optional arguments, so we use a name -> value structure and a redirect loop to allow any 
+        // number of them to be entered in any order.
+        // world name -> argument name -> argument value -> redirect to world name
+        // Unfortunately due to https://github.com/Mojang/brigadier/issues/137 argument values are lost when a redirect occurs.
+        // To work around this we add a redirect modifier to every redirect, which is able to see the argument values before 
+        // they disappear, then use that to populate the WorldArgumentBuilder as we go.
+        // The redirect modifier won't be called for the final argument, so we also need to do the same thing in the executor.
+        optionalArguments.forEach(argument -> {
+            LiteralCommandNode<CommandSourceStack> nameNode = literal(argument.name)
+                    .then(argument(argument.name, argument.argumentType)
+                    .redirect(worldNameNode, this::handleArguments) // Redirect modifier
+                    .executes(this::doCreate))
+                    .build();
+
+            worldNameNode.addChild(nameNode);
+        });
+
         return literal("create")
                 .requires(ctx -> ctx.getSender().hasPermission("hyperverse.create"))
-                .then(worldNode)
+                .then(worldNameNode)
                 .build();
+    }
+    
+    // Workaround for https://github.com/Mojang/brigadier/issues/137
+    // Populates the WorldConfigurationBuilder with all the arguments that exist before any redirects can remove them
+    // If the name argument exists we assume this is a new command execution and reset the builder
+    private CommandSourceStack handleArguments(CommandContext<CommandSourceStack> ctx) {
+        // Reset builder if the name argument is present
+        try {
+            String name = ctx.getArgument("name", String.class);
+            builder = worldConfigurationFactory.builder().setName(name);
+        } catch (IllegalArgumentException _) {}
+
+        optionalArguments.forEach(a -> a.handle(ctx, builder));
+        return ctx.getSource();
     }
 
     @Override
@@ -104,78 +130,32 @@ public class CreateCommand implements HyperCommand {
     }
 
     private int doCreate(CommandContext<CommandSourceStack> ctx) {
-        String name = ctx.getArgument("world", String.class);
+        // Redirect handler isn't called for final argument, so handle it here
+        handleArguments(ctx);
+        
         CommandSender sender = ctx.getSource().getSender();
+        WorldConfiguration configuration = builder.createWorldConfiguration();
 
         // Check if the name already exists
         for (final HyperWorld hyperWorld : this.worldManager.getWorlds()) {
-            if (hyperWorld.getConfiguration().getName().equalsIgnoreCase(name)) {
+            if (hyperWorld.getConfiguration().getName().equalsIgnoreCase(configuration.getName())) {
                 MessageUtil.sendMessage(sender, Messages.messageWorldExists);
                 return Command.SINGLE_SUCCESS;
             }
         }
         
         // Double check that Bukkit doesn't have the world stored
-        if (Bukkit.getWorld(name) != null) {
+        if (Bukkit.getWorld(configuration.getName()) != null) {
             MessageUtil.sendMessage(sender, Messages.messageWorldExists);
             return Command.SINGLE_SUCCESS;
         }
         
         // Now validate the world name
-        if (!WorldUtil.validateName(name)) {
+        if (!WorldUtil.validateName(configuration.getName())) {
             MessageUtil.sendMessage(sender, Messages.messageWorldNameInvalid);
             return Command.SINGLE_SUCCESS;
         }
         
-        final WorldConfigurationBuilder worldConfiguration = this.worldConfigurationFactory.builder()
-                .setName(name);
-        
-        try {
-            String[] generator = ctx.getArgument("generator", String[].class);
-            worldConfiguration.setGenerator(generator[0]).setGeneratorArg(generator[1]);
-        } catch (IllegalArgumentException _) {}        
-        
-        try {
-            String[] biomeProvider = ctx.getArgument("biomeprovider", String[].class);
-            worldConfiguration.setBiomeProvider(biomeProvider[0]).setBiomeProviderArg(biomeProvider[1]);
-        } catch (IllegalArgumentException _) {}
-        
-        try {
-            WorldEnvironment environment = ctx.getArgument("environment", WorldEnvironment.class);
-            worldConfiguration.setType(environment);
-        } catch (IllegalArgumentException _) {}
-        
-        try {
-            WorldType type = ctx.getArgument("type", WorldType.class);
-            worldConfiguration.setWorldFeatures(type);
-        } catch (IllegalArgumentException _) {}
-        
-        try {
-            String typeSettings = ctx.getArgument("typesettings", String.class);
-            worldConfiguration.setSettings(typeSettings);
-        } catch (IllegalArgumentException _) {}
-        
-        try {
-            long seed = ctx.getArgument("seed", Long.class);
-            worldConfiguration.setSeed(seed);
-        } catch (IllegalArgumentException _) {}
-        
-        try {
-            boolean generateStructures = ctx.getArgument("generatestructures", Boolean.class);
-            worldConfiguration.setGenerateStructures(generateStructures);
-        } catch (IllegalArgumentException _) {}
-        
-        try {
-            boolean hardcore = ctx.getArgument("hardcore", Boolean.class);
-            worldConfiguration.setHardcore(hardcore);
-        } catch (IllegalArgumentException _) {}
-        
-        try {
-            boolean bonusChest = ctx.getArgument("bonuschest", Boolean.class);
-            worldConfiguration.setBonusChest(bonusChest);
-        } catch (IllegalArgumentException _) {}
-        
-        WorldConfiguration configuration = worldConfiguration.createWorldConfiguration();
         createWorld(configuration, sender);
         
         return Command.SINGLE_SUCCESS;
@@ -223,6 +203,15 @@ public class CreateCommand implements HyperCommand {
                     "%reason%", e.getMessage()
             );
             hyperverse.getSLF4JLogger().error("Failed to create world {}", hyperWorld.getDisplayName(), e);
+        }
+    }
+    
+    private record Argument<T>(String name, ArgumentType<T> argumentType, Class<T> valueClass,
+                               BiConsumer<WorldConfigurationBuilder, T> handler) {
+        public void handle(CommandContext<CommandSourceStack> ctx, WorldConfigurationBuilder builder) {
+            try {
+                handler.accept(builder, ctx.getArgument(name, valueClass));
+            } catch(IllegalArgumentException _) {}
         }
     }
 }
